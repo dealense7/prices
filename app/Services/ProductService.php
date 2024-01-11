@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Services;
+
+use App\Contracts\Repositories\CompanyRepositoryContract;
+use App\Contracts\Repositories\ProductRepositoryContract;
+use App\Exceptions\ItemNotFoundException;
+use App\Models\Product;
+use App\Support\Collection;
+use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
+class ProductService
+{
+    public function __construct(
+        private readonly ProductRepositoryContract $repository,
+        private readonly CompanyRepositoryContract $companyRepository
+    ) {
+    }
+
+    public function findItems(
+        array $filters = [],
+        int $page = 1,
+        ?int $perPage = null,
+        ?string $sort = null
+    ): LengthAwarePaginator {
+        return $this->repository->findItems($filters, $page, $perPage, $sort);
+    }
+
+    public function getProductsGroupedByCategory(): Collection
+    {
+        return $this->repository->getProductsGroupedByCategory();
+    }
+
+    public function findById(int $id): ?Product
+    {
+        return $this->repository->findById($id);
+    }
+
+    public function findOrFailById(int $id): Product
+    {
+        $item = $this->findById($id);
+
+        if (!$item) {
+            throw new ItemNotFoundException();
+        }
+
+        return $item;
+    }
+
+    public function getPrices(Product $product): array
+    {
+        Carbon::setLocale('ka');
+        return $product
+            ->prices
+            ->transform(function ($item) {
+                return [
+                    'price'       => number_format($item->price / 100, 2),
+                    'companyLogo' => 'storage/'.$item->store->logo->path,
+                    'companyName' => $item->store->name,
+                    'companyYear' => $item->store->year,
+                    'createdAt'   => $item->created_at->diffForHumans()
+                ];
+            })
+            ->toArray();
+
+    }
+
+    public function update(Product $item, array $data): Product
+    {
+        if (
+            !empty($data['name'])
+            || !empty($data['show'])
+        ) {
+            $this->repository->update($item, [
+                'name' => data_get($data, 'name', $item->getName()),
+                'show' => data_get($data, 'show', $item->getShow())
+            ]);
+        }
+
+        if (isset($data['categories'])) {
+            $this->repository->syncCategories($item, $data['categories']);
+        }
+
+        if (isset($data['tags'])) {
+            $this->repository->syncTags($item, $data['tags']);
+        }
+
+        if (!empty($data['company'])) {
+            if (intval($data['company']['id']) !== 0) {
+                $company = $this->companyRepository->findById((int) $data['company']['id']);
+            } else {
+                $company = $this->companyRepository->create(['name' => $data['company']['name']]);
+            }
+            $this->repository->update($item, [
+                'company_id' => $company->getId()
+            ]);
+        }
+
+        return $item;
+    }
+
+    public function delete(Product $item): void
+    {
+        $item->delete();
+    }
+}
