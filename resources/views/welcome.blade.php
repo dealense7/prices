@@ -77,9 +77,9 @@
                                 <div>
                                     <div class="flex items-center gap-1 mt-1">
                                      <span class="font-bolder">
-                                        {{number_format(($product->prices->min('price') / 100), 2)}}
+                                        {{number_format(($product->prices->min('price') / 100), 2)}} ₾
                                     </span>
-                                        <img src="{{ Vite::asset('resources/imgs/lari.svg') }}" class="h-4">
+
                                     </div>
 
                                     @if($product->size !== 'ერთ')
