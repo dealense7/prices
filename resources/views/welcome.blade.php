@@ -9,6 +9,7 @@
             imgUrl: '',
             updated: '',
             prices: [],
+            isLoading: true,
         }"
     >
         <div x-data="{
@@ -23,7 +24,7 @@
                  }
              })
              .then(response => response.json())
-             .then(data => prices = data)
+             .then(data => {prices = data; isLoading = false})
             }
         }"
         >
@@ -49,7 +50,8 @@
                              company = '{{$product->company->name ?? ''}}';
                              imgUrl = 'storage/{{$product->images->first()->path ?? ''}}';
                               updated = '{{ $product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffForHumans() }}';
-                              fetchPrices({{$product->id}})"
+                              fetchPrices({{$product->id}});
+                              isLoading = true"
                         >
                             <div class="absolute right-0 top-0 text-[8px] font-normal p-1.5 z-10">
                                 @if ($product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffInDays(now()) <= 1)
@@ -113,7 +115,8 @@
                     <!-- Modal content -->
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                        <div
+                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                             <div class="font-normal text-[10px]">
                                 <h3 class="text-base font-bolder text-gray-900 dark:text-white" x-text="title">
                                 </h3>
@@ -134,19 +137,21 @@
                         <div class="p-4 md:p-5 space-y-4">
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="col-span-1">
-                                    <img :src="imgUrl" />
+                                    <img :src="imgUrl"/>
                                 </div>
                                 <div class="col-span-2">
                                     <h4 class="font-bold text-sm">სად შეძლებ ყიდვას</h4>
                                     <span class="font-normal text-[10px] text-gray-500">პროდუქტის ფასები გადმოტანილია სხვა-და-სხვა ონლაინ პროვაიდერებიდან, ფასი შეიძლება არ იყოს რეალური.</span>
-                                    <div class="flex flex-col">
+                                    <div class="flex flex-col" x-show="!isLoading">
                                         <template x-for="price in prices">
                                             <div class="flex items-center justify-between py-3">
                                                 <div class="flex items-center gap-2">
                                                     <img :src='price.companyLogo' class="w-8 object-contain h-8">
                                                     <div class="flex flex-col">
-                                                        <span class="font-medium text-xs" x-text="price.companyName"></span>
-                                                        <span class="font-normal text-[10px]" x-text="price.companyYear"></span>
+                                                        <span class="font-medium text-xs"
+                                                              x-text="price.companyName"></span>
+                                                        <span class="font-normal text-[10px]"
+                                                              x-text="price.companyYear"></span>
                                                     </div>
                                                 </div>
                                                 <h5 class="font-bolder text-gray-700 text-base">
@@ -155,11 +160,26 @@
                                             </div>
                                         </template>
                                     </div>
+                                    <div class="flex flex-col" x-show="isLoading">
+                                            <div class="flex items-center justify-between py-3">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-8 object-contain h-8 animate-pulse bg-gray-300 rounded-md block"></div>
+                                                    <div class="flex flex-col">
+                                                        <span class="font-medium text-xs animate-pulse bg-gray-300 w-[150px] p-1"></span>
+                                                        <span class="font-medium text-xs animate-pulse bg-gray-300 w-[80px] p-1 mt-1.5"></span>
+                                                    </div>
+                                                </div>
+                                                <h5 class="font-bolder text-gray-700 text-base flex items-center gap-2">
+                                                    <span class="block animate-pulse h-7 w-7  bg-gray-300"></span>
+                                                </h5>
+                                            </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Modal footer -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                        <div
+                            class="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                             <div class="flex items-center">
                             </div>
                             <h5 class="font-normal text-[10px] text-gray-800 mt-1.5" x-text="updated"></h5>
