@@ -1,5 +1,5 @@
 <div>
-    <div class="grid grid-cols-5 gap-3">
+    <div class="grid grid-cols-6 gap-3">
         @foreach($stores as $store)
             <div class="col-span-1 w-full h-full bg-white shadow p-14 rounded-md flex items-center justify-center">
                 <img alt="logo-{{$store->name}}" src="storage/{{$store->logo->path}}" class="h-8 object-contain">

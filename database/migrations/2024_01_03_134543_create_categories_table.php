@@ -9,7 +9,8 @@ return new class extends Migration {
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->index();
+            $table->string('slug')->index();
+            $table->string('foreignId');
             $table->boolean('show')->default(true);
             $table->foreignId('parent_id')->nullable()->constrained('categories');
             $table->timestamps();

@@ -10,14 +10,17 @@ enum Stores: int
     case Spar      = 4;
     case Agrohub   = 5;
 
+    case OriNabiji = 6;
+
     public function text(): string
     {
         return match ($this) {
-            Stores::Carrefour => 'Carrefour',
-            Stores::Goodwill => 'Goodwill',
-            Stores::Nikora => 'Nikora',
-            Stores::Spar => 'Spar',
-            Stores::Agrohub => 'Agrohub',
+            Stores::Carrefour => 'კარფური',
+            Stores::Goodwill => 'გუდვილი',
+            Stores::Nikora => 'ნიკორა',
+            Stores::Spar => 'სპარი',
+            Stores::Agrohub => 'აგროჰაბი',
+            Stores::OriNabiji => 'ორი ნაბიჯი',
         };
     }
 }

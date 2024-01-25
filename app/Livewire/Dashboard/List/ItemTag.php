@@ -3,7 +3,7 @@
 namespace App\Livewire\Dashboard\List;
 
 use App\Enums\TagType;
-use App\Models\Product;
+use App\Models\Product\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;

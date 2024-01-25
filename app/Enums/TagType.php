@@ -7,16 +7,23 @@ enum TagType: int
     case Size     = 1;
     case Quantity = 2;
     case Weight   = 3;
-    case Other    = 4;
 
 
-    public function text(): string
+    public function text(): array
     {
         return match ($this) {
-            TagType::Size => 'ზომა',
-            TagType::Quantity => 'რაოდენობა',
-            TagType::Weight => 'წონა',
-            TagType::Other => 'სხვა',
+            TagType::Size => [
+                Languages::Georgian->value => 'ზომა',
+                Languages::English->value  => 'Size',
+            ],
+            TagType::Quantity => [
+                Languages::Georgian->value => 'რაოდენობა',
+                Languages::English->value  => 'Quantity',
+            ],
+            TagType::Weight => [
+                Languages::Georgian->value => 'წონა',
+                Languages::English->value  => 'Weight',
+            ],
         };
     }
 }

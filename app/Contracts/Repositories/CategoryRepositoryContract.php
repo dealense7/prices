@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Contracts\Repositories;
 
-use App\Models\Category;
+use App\Models\Category\Category;
 use App\Support\Collection;
 
 interface CategoryRepositoryContract

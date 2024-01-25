@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Contracts\Repositories;
 
-use App\Models\Tag;
+use App\Models\Tag\Tag;
 use App\Support\Collection;
 
 interface TagRepositoryContract

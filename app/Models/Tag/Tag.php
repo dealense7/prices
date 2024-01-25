@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Tag;
 
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int id
  * @property int parent_id
  * @property int type
- * @property string name
  * @property boolean show
  *
  * @method filterByKeyword(array $filters): Builder
@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Tag extends Model
 {
     protected $fillable = [
-        'name',
         'show',
         'type',
         'parent_id'
@@ -27,11 +26,6 @@ class Tag extends Model
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     public function getParentId(): int
@@ -52,6 +46,11 @@ class Tag extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Tag::class, 'parent_id');
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(TagTranslation::class, 'tag_id');
     }
 
     public function scopeFilterByKeyword(Builder $builder, array $filters): Builder

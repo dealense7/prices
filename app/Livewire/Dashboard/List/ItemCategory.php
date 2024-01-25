@@ -2,9 +2,7 @@
 
 namespace App\Livewire\Dashboard\List;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Services\CategoryService;
+use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;

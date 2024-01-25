@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\Languages;
 use App\Jobs\SaveFetchedProduct;
+use App\Models\Category\Category;
+use App\Models\Category\CategoryTranslation;
 use App\Models\Store;
 use App\Models\Url;
 use Illuminate\Console\Command;
@@ -21,15 +24,24 @@ class FetchData extends Command
 
         /** @var Store $store */
         foreach ($stores as $store) {
+            $fetchedItems = [];
             /** @var Url $url */
             foreach ($store->urls as $url) {
                 $parser = $url->resolveProvider();
 
+                dd($keywords);
                 foreach ($keywords as $words) {
                     $parser->fetchData($words);
-                    SaveFetchedProduct::dispatch($parser->getItems(), $store->getId(), $url->provider->getId());
+                    $fetchedItems = [
+                        ...$fetchedItems,
+                        ...$parser->getItems()
+                    ];
                 }
             }
+            dd(count($fetchedItems));
+
+//            SaveFetchedProduct::dispatch($parser->getItems(), $store->getId(), $url->provider->getId());
+
         }
     }
 
@@ -43,15 +55,24 @@ class FetchData extends Command
 
     private function getKeywords(): array
     {
-        return [
-            'ქათამი',
-            'ძეხვი',
-            'სოსისი',
-            'კვერცხი',
-            'ლუდი',
-            'პური',
-            'გაზიანი',
-            'პური',
-        ];
+        $items = CategoryTranslation::query()
+            ->where('language_id', Languages::Georgian->value)
+            ->whereIn('category_id', Category::query()->whereNotNull('parent_id')->pluck('id')->toArray())
+            ->get()->pluck('name')->toArray();
+        foreach ($items as $key => $item){
+            if (str_contains($item, '&')){
+                $arr = explode('&', $item);
+                foreach ($arr as $k => $v)
+                {
+                    if ($k === 0){
+                        $items[$key] = $v;
+                    }else{
+                        $items[] = $v;
+                    }
+                }
+            }
+        }
+
+        return $items;
     }
 }

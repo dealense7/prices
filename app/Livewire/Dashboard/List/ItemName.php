@@ -2,8 +2,7 @@
 
 namespace App\Livewire\Dashboard\List;
 
-use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
+use App\Models\Product\Product;
 use Illuminate\View\View;
 use Livewire\Component;
 

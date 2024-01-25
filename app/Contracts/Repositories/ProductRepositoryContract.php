@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Contracts\Repositories;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 use App\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 

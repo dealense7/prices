@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Product;
 
 
+use App\Models\Model;
+use App\Models\Store;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**

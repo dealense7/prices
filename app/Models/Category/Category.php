@@ -1,7 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Category;
 
+use App\Enums\Languages;
+use App\Models\Model;
+use App\Models\Product\Product;
+use App\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,17 +13,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int id
  * @property int parent_id
- * @property string name
+ * @property string slug
  * @property boolean show
+ *
+ * @property Collection translations
  *
  * @method filterByKeyword(array $filters): Builder
  */
 class Category extends Model
 {
     protected $fillable = [
-        'name',
+        'slug',
         'show',
-        'parent_id'
+        'parent_id',
+        'foreignId'
     ];
 
     public function getId(): int
@@ -27,9 +34,16 @@ class Category extends Model
         return $this->id;
     }
 
-    public function getName(): string
+    public function getNameAttribute(): string
     {
-        return $this->name;
+        return $this->translations
+            ->firstWhere('language_id', Languages::Georgian->value)
+            ->name;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
     }
 
     public function getParentId(): int
@@ -47,9 +61,19 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
+    public function translations(): HasMany
+    {
+        return $this->hasMany(CategoryTranslation::class, 'category_id');
+    }
+
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'product_to_categories');
+    }
+
+    public function allProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_to_categories', 'parent_category_id');
     }
 
     public function scopeFilterByKeyword(Builder $builder, array $filters): Builder

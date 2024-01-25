@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\Providers;
 use App\Models\Provider;
 use App\Parsers\GlovoParser;
+use App\Parsers\OriNabijiParser;
 use Illuminate\Database\Seeder;
 use function Laravel\Prompts\text;
 
@@ -17,6 +18,11 @@ class ProviderSeeder extends Seeder
                 'id'    => Providers::Glovo->value,
                 'name'  => Providers::Glovo->text(),
                 'class' => GlovoParser::class
+            ],
+            [
+                'id'    => Providers::OriNabiji->value,
+                'name'  => Providers::OriNabiji->text(),
+                'class' => OriNabijiParser::class
             ]
         ];
 

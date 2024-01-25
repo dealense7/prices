@@ -77,19 +77,50 @@ class StoreSeeder extends Seeder
                     ]
                 ]
             ],
+            [
+                'id'   => Stores::Agrohub->value,
+                'name' => Stores::Agrohub->text(),
+                'year' => 2016,
+                'img'  => 'agrohub.png',
+                'urls' => [
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/169869/addresses/289571/search?query='
+                    ]
+                ]
+            ],
+            [
+                'id'   => Stores::OriNabiji->value,
+                'name' => Stores::OriNabiji->text(),
+                'year' => 2010,
+                'img'  => 'orinabiji.png',
+                'urls' => [
+                    [
+                        'provider_id' => Providers::OriNabiji->value,
+                        'url'         => 'https://catalog-api.orinabiji.ge/catalog/api/products/suggestions?lang=ge&limit=100&sortField=isInStock&sortDirection=-1&searchText='
+                    ]
+                ]
+            ],
         ];
 
         foreach ($items as $data) {
             $imgPath = storage_path('logos/'.$data['img']);
 
             /** @var Store $store */
-            $store = Store::query()->firstOrCreate([
-                'id'   => $data['id'],
-                'name' => $data['name'],
-                'year' => $data['year']
-            ]);
+            $store = Store::query()->updateOrCreate(
+                [
+                    'id' => $data['id']
+                ],
+                [
+                    'id'   => $data['id'],
+                    'name' => $data['name'],
+                    'year' => $data['year']
+                ]
+            );
 
-            $this->saveLogo($store->getId(), $imgPath);
+            if ($store->logo()->first() === null) {
+                $this->saveLogo($store->getId(), $imgPath);
+            }
 
             $store->urls()->forceDelete();
 

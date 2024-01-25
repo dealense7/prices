@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Contracts\Repositories\CompanyRepositoryContract;
 use App\Contracts\Repositories\ProductRepositoryContract;
 use App\Exceptions\ItemNotFoundException;
-use App\Models\Product;
+use App\Models\Product\Product;
 use App\Support\Collection;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

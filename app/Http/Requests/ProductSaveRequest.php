@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Category;
-use App\Models\Tag;
+use App\Models\Category\Category;
+use App\Models\Tag\Tag;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductSaveRequest extends FormRequest

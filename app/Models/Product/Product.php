@@ -1,9 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Product;
 
 
 use App\Enums\TagType;
+use App\Models\Category\Category;
+use App\Models\Company;
+use App\Models\File;
+use App\Models\Model;
+use App\Models\Tag\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -102,6 +107,11 @@ class Product extends Model
     public function prices(): HasMany
     {
         return $this->hasMany(ProductPrice::class, 'product_id')->where('active', true)->orderBy('price');
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(ProductTranslation::class, 'product_id');
     }
 
     public function images(): MorphMany

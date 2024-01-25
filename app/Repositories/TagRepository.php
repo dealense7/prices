@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\TagRepositoryContract;
-use App\Models\Tag;
+use App\Models\Tag\Tag;
 use App\Support\Collection;
 
 class TagRepository implements TagRepositoryContract

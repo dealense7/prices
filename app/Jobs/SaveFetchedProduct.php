@@ -3,10 +3,15 @@
 namespace App\Jobs;
 
 use App\DataTransferObjects\ProductDto;
+use App\Enums\Languages;
+use App\Enums\TagType;
+use App\Models\Category\Category;
+use App\Models\Company;
 use App\Models\File;
-use App\Models\Product;
-use App\Models\ProductPrice;
-use Carbon\Carbon;
+use App\Models\Product\Product;
+use App\Models\Product\ProductTranslation;
+use App\Models\Tag\Tag;
+use App\Models\Tag\TagTranslation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -33,57 +38,22 @@ class SaveFetchedProduct implements ShouldQueue
     {
         $productCodes = Arr::pluck($this->items, 'code');
         $products     = $this->getProductByCode($productCodes);
-        $now          = now();
 
-        /** @var ProductDto $item */
-        foreach ($this->items as $item) {
-            $foundProduct = $products->firstWhere('code', $item->code);
-            if (empty($foundProduct->deleted_at)){
-                $productId = $products->firstWhere('code', $item->code)?->id;
-                if ($productId == null) {
-                    $productId = $this->createProduct($item);
+        DB::transaction(function () use ($products) {
+            /** @var ProductDto $item */
+            foreach ($this->items as $item) {
+                if ($products->firstWhere('code', $item->code) === null) {
+                    try {
+                        $productId = $this->createProduct($item);
+                        $this->downloadImage($productId, $item->imageUrl);
+                    } catch (\Exception $e) {
+                        dump($e->getMessage());
+                        dd($item);
+                    }
                 }
 
-                if (
-                    DB::table((new ProductPrice())->getTable())
-                        ->select('store_id')
-                        ->where('product_id', $productId)
-                        ->groupBy('store_id')
-                        ->get()->count() > 1
-                    && DB::table((new File())->getTable())
-                        ->where('files.fileable_type', Product::class)
-                        ->where('files.fileable_id', $productId)
-                        ->count() < 1
-                ) {
-
-                    $this->downloadImage($productId, $item->imageUrl);
-                }
-
-                if (
-                    DB::table((new ProductPrice())->getTable())
-                        ->where('product_id', $productId)
-                        ->whereDate('created_at', $now->format('Y-m-d'))
-                        ->where('price', $item->price)
-                        ->where('store_id', $this->storeId)
-                        ->first() === null
-                ) {
-                    DB::table((new ProductPrice())->getTable())
-                        ->where('product_id', $productId)
-                        ->where('store_id', $this->storeId)
-                        ->where('active', '=', true)
-                        ->update(['active' => false]);
-
-                    DB::table((new ProductPrice())->getTable())->insert([
-                        'product_id'  => $productId,
-                        'store_id'    => $this->storeId,
-                        'provider_id' => $this->providerId,
-                        'price'       => $item->price,
-                        'created_at'  => $now,
-                        'active'      => true,
-                    ]);
-                }
             }
-        }
+        });
     }
 
     private function getProductByCode(array $codes): Collection
@@ -98,27 +68,118 @@ class SaveFetchedProduct implements ShouldQueue
     {
         $productId = DB::table((new Product())->getTable())
             ->insertGetId([
-                'name' => $item->name,
-                'code' => $item->code
+                'code' => $item->code,
             ]);
+
+        $this->createTranslations($productId, $item->name);
+        $this->createTag($productId, $item->tag, $item->tagName);
+        $this->createCompany($productId, $item->companyName);
 
         return $productId;
     }
 
-    private function downloadImage(int $productId, string $url): void
+    private function createTranslations(int $productId, string $name): void
     {
+
+        DB::table((new ProductTranslation())->getTable())
+            ->insert([
+                'product_id'  => $productId,
+                'language_id' => Languages::Georgian->value,
+                'name'        => $name,
+            ]);
+    }
+
+    private
+    function createTag(
+        int $productId,
+        ?string $tag,
+        ?string $tagName
+    ): void {
+        $tagId = TagType::Quantity;
+
+        if (!empty($tag) && !empty($tagName)) {
+            /** @var TagTranslation|null $tagTranslation */
+            $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag.' '.$tagName)->first();
+            $tagId          = $tagTranslation?->tag_id;
+
+            if ($tagId === null) {
+                $type = TagType::Quantity;
+
+                if (in_array($tagName, ['გრ', 'კგ'])) {
+                    $type = TagType::Weight;
+                }
+                if (in_array($tagName, ['მლ', 'ლ'])) {
+                    $type = TagType::Size;
+                }
+
+                $tagId = DB::table((new Tag())->getTable())->insertGetId([
+                    'type'      => $type->value,
+                    'parent_id' => $type->value
+                ]);
+
+                DB::table((new TagTranslation())->getTable())
+                    ->insert([
+                        'tag_id'      => $tagId,
+                        'language_id' => Languages::Georgian->value,
+                        'name'        => $tag.' '.$tagName,
+                    ]);
+            }
+        }
+
+        DB::table((new Product())->tags()->getTable())
+            ->insert([
+                'product_id' => $productId,
+                'tag_id'     => $tagId
+            ]);
+    }
+
+    private
+    function createCompany(
+        int $productId,
+        ?string $companyName = null,
+    ): void {
+        if ($companyName) {
+            $companyId = DB::table((new Company())->getTable())->where('name', $companyName)->first()?->id;
+
+            if ($companyId === null) {
+                $companyId = DB::table((new Company())->getTable())->insertGetId(['name' => $companyName]);
+            }
+
+            if ($companyId) {
+                DB::table((new Product())->getTable())->where('id', $productId)
+                    ->update([
+                        'id'         => $productId,
+                        'company_id' => $companyId
+                    ]);
+            }
+
+        }
+    }
+
+    private
+    function downloadImage(
+        int $productId,
+        string $url
+    ): void {
+        if (empty($url)){
+            return;
+        }
         $extension = null;
 
-        if (str_contains(strtolower($url), 'jpg')){
+        if (str_contains(strtolower($url), 'jpg')) {
             $extension = 'jpg';
         }
 
-        if (str_contains(strtolower($url), 'jpeg')){
+        if (str_contains(strtolower($url), 'jpeg')) {
             $extension = 'jpeg';
         }
 
-        if (str_contains(strtolower($url), 'png')){
+        if (str_contains(strtolower($url), 'png')) {
             $extension = 'png';
+        }
+
+        if (str_contains(strtolower($url), 'webp')) {
+            $extension = 'webp';
         }
 
         if ($extension !== null) {

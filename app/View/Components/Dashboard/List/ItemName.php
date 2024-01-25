@@ -2,7 +2,7 @@
 
 namespace App\View\Components\Dashboard\List;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;

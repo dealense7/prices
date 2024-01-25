@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('tag_translations', function (Blueprint $table) {
             $table->id();
-            $table->boolean('show')->default(true);
-            $table->integer('type');
-            $table->foreignId('parent_id')->nullable()->constrained('tags');
+            $table->string('name');
+            $table->foreignId('language_id')->constrained('languages');
+            $table->foreignId('tag_id')->constrained('tags');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -19,6 +19,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('tag_translations');
     }
 };

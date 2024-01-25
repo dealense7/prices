@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\ProductRepositoryContract;
-use App\Models\Category;
+use App\Models\Category\Category;
 use App\Models\File;
-use App\Models\Product;
-use App\Models\ProductPrice;
+use App\Models\Product\Product;
+use App\Models\Product\ProductPrice;
 use App\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class ProductRepository implements ProductRepositoryContract
@@ -69,29 +68,46 @@ class ProductRepository implements ProductRepositoryContract
     {
 
         $items = Category::query()
-            ->whereHas('products', static function ($query) {
-                $query->where('show', true);
-            })
-            ->withCount('products')
-            ->orderByDesc('products_count')
+//            ->whereHas('products', static function ($query) {
+//                $query->where('show', true);
+//            })
+            ->whereNull('parent_id')
+            ->withCount('allProducts')
+//            ->orderByDesc('all_products_count')
+            ->limit(4)
+            ->has('allProducts', '>=', 12)
             ->get()
             ->each(function ($item) {
                 $item->load([
-                    'products' => static function ($query) {
+                    'allProducts' => static function ($query) {
                         $query
-                            ->with([
-                                'categories',
-                                'tags',
-                                'company',
-                                'prices',
-                                'images'
-                            ])
-                            ->where('show', true)
-                            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id) DESC')
+                            ->select('id')
+//                            ->where('show', true)
+//                            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND created_at > "'.now()->subDay()->toDateString().'") DESC')
                             ->take(12);
                     }
                 ]);
             });
+
+        $products = Product::query()
+            ->with([
+                'categories',
+                'tags',
+                'company',
+                'prices',
+                'images'
+            ])
+            ->whereIn('id', $items->pluck('allProducts.*.id')->flatten()->toArray())
+            ->get();
+
+        /** @var Category $item */
+        foreach ($items as $item) {
+            $categoryId = $item->id;
+
+            $item->setRelation('allProducts', $products->filter(function ($product) use ($categoryId) {
+                return $product->categories->pluck('parent_id')->contains($categoryId);
+            }));
+        }
 
         return $items;
     }

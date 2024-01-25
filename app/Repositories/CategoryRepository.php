@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\CategoryRepositoryContract;
-use App\Models\Category;
+use App\Models\Category\Category;
 use App\Support\Collection;
 
 class CategoryRepository implements CategoryRepositoryContract
@@ -15,7 +15,10 @@ class CategoryRepository implements CategoryRepositoryContract
 
         $model = $this->getModel();
         $items = $model->filterByKeyword($filters)
-            ->with(['children'])
+            ->with([
+                'translations',
+                'children.translations'
+            ])
             ->whereNull('parent_id');
 
         foreach ($model->parseSort($sort) as $column => $direction) {
