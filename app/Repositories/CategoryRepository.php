@@ -16,8 +16,8 @@ class CategoryRepository implements CategoryRepositoryContract
         $model = $this->getModel();
         $items = $model->filterByKeyword($filters)
             ->with([
-                'translations',
-                'children.translations'
+                'translation',
+                'children.translation'
             ])
             ->whereNull('parent_id');
 

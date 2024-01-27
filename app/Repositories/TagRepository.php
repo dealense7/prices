@@ -14,8 +14,11 @@ class TagRepository implements TagRepositoryContract
     {
         $model = $this->getModel();
         $items = $model->filterByKeyword($filters)
-            ->with(['children'])
-            ->whereNull('parent_id');
+            ->with([
+                'children',
+                'translations'
+            ])
+            ->whereNotNull('parent_id');
 
         foreach ($model->parseSort($sort) as $column => $direction) {
             $items = $items->orderBy($column, $direction);

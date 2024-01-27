@@ -3,9 +3,11 @@
 namespace App\Models\Tag;
 
 
+use App\Enums\Languages;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int id
@@ -38,6 +40,7 @@ class Tag extends Model
         return $this->type;
     }
 
+
     public function getShow(): bool
     {
         return $this->show;
@@ -46,6 +49,11 @@ class Tag extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Tag::class, 'parent_id');
+    }
+
+    public function translation(): HasOne
+    {
+        return $this->hasOne(TagTranslation::class, 'tag_id')->where('language_id', Languages::Georgian->value);
     }
 
     public function translations(): HasMany

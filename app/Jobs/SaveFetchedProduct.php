@@ -21,6 +21,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SaveFetchedProduct implements ShouldQueue
 {
@@ -29,7 +30,8 @@ class SaveFetchedProduct implements ShouldQueue
     public function __construct(
         private readonly array $items,
         private readonly int $storeId,
-        private readonly int $providerId
+        private readonly int $categoryId,
+        private readonly int $parentCategoryId,
     ) {
     }
 
@@ -39,19 +41,16 @@ class SaveFetchedProduct implements ShouldQueue
         $productCodes = Arr::pluck($this->items, 'code');
         $products     = $this->getProductByCode($productCodes);
 
-        DB::transaction(function () use ($products) {
-            /** @var ProductDto $item */
-            foreach ($this->items as $item) {
-                if ($products->firstWhere('code', $item->code) === null) {
-                    try {
-                        $productId = $this->createProduct($item);
-                        $this->downloadImage($productId, $item->imageUrl);
-                    } catch (\Exception $e) {
-                        dump($e->getMessage());
-                        dd($item);
-                    }
-                }
+        $items = collect($this->items)->whereNotIn('code', $products->pluck('code')->toArray());
+        dump(count($this->items).' -> '.$items->count());
 
+        DB::transaction(function () use ($items) {
+            /** @var ProductDto $item */
+            foreach ($items as $key => $item) {
+                $productId = $this->createProduct($item);
+                if (!empty($item->imageUrl)) {
+                    $this->downloadImage($productId, $item->code, $item->imageUrl);
+                }
             }
         });
     }
@@ -74,6 +73,7 @@ class SaveFetchedProduct implements ShouldQueue
         $this->createTranslations($productId, $item->name);
         $this->createTag($productId, $item->tag, $item->tagName);
         $this->createCompany($productId, $item->companyName);
+        $this->createCategory($productId);
 
         return $productId;
     }
@@ -156,12 +156,24 @@ class SaveFetchedProduct implements ShouldQueue
         }
     }
 
+    private function createCategory(int $productId,): void
+    {
+        DB::table((new Product())->categories()->getTable())
+            ->insert([
+                'product_id'         => $productId,
+                'category_id'        => $this->categoryId,
+                'parent_category_id' => $this->parentCategoryId
+            ]);
+
+    }
+
     private
     function downloadImage(
         int $productId,
+        int $code,
         string $url
     ): void {
-        if (empty($url)){
+        if (empty($url)) {
             return;
         }
         $extension = null;
@@ -188,21 +200,22 @@ class SaveFetchedProduct implements ShouldQueue
                 $imageContent = file_get_contents($url);
 
                 if ($imageContent) {
-                    $filename = uniqid().'.'.$extension;
+                    $filename = $code.'.'.$extension;
 
                     Storage::disk('public')->put('products'.'/'.$filename, $imageContent);
 
                     $diskUrl = Storage::disk('public')->path('products'.'/'.$filename);
 
-
-                    DB::table((new File())->getTable())->insert([
+                    $data = [
                         'name'          => $filename,
                         'path'          => 'products'.'/'.$filename,
                         'size'          => filesize($diskUrl),
                         'extension'     => $extension,
                         'fileable_id'   => $productId,
                         'fileable_type' => Product::class,
-                    ]);
+                    ];
+
+                    DB::table((new File())->getTable())->insert($data);
                 }
             } catch (\Exception $e) {
 

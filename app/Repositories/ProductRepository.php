@@ -43,8 +43,8 @@ class ProductRepository implements ProductRepositoryContract
         $items = $model
             ->filterByKeyword($filters)
             ->with([
-                'categories',
-                'tags',
+                'categories.translation',
+                'tags.translation',
                 'images'
             ])
             ->whereIn('id', $productIds);
@@ -175,3 +175,5 @@ class ProductRepository implements ProductRepositoryContract
         return new ProductPrice();
     }
 }
+
+

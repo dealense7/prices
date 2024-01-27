@@ -9,6 +9,7 @@ use App\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int id
@@ -59,6 +60,11 @@ class Category extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function translation(): HasOne
+    {
+        return $this->hasOne(CategoryTranslation::class, 'category_id')->where('language_id', Languages::Georgian->value);
     }
 
     public function translations(): HasMany

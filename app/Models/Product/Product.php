@@ -3,6 +3,7 @@
 namespace App\Models\Product;
 
 
+use App\Enums\Languages;
 use App\Enums\TagType;
 use App\Models\Category\Category;
 use App\Models\Company;
@@ -31,7 +32,6 @@ use Illuminate\Support\Collection;
 class Product extends Model
 {
     protected $fillable = [
-        'name',
         'code',
         'show',
         'company_id'
@@ -42,9 +42,9 @@ class Product extends Model
         return $this->id;
     }
 
-    public function getName(): string
+    public function getNameAttribute(): string
     {
-        return $this->name;
+        return $this->translations->firstWhere('language_id', Languages::Georgian->value)->name;
     }
 
     public function getCompanyId(): int

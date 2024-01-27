@@ -16,7 +16,7 @@
                 <template x-if="selectedOptions">
                     <template x-for="selected in selectedOptions">
                                 <span :key="selected.id" class="text-xs bg-gray-200 p-1 text-gray-700 flex items-center w-max">
-                                    <span x-text="selected.name"></span>
+                                    <span x-text="selected.translation.name"></span>
                                     <button type="button" x-on:click="update = true; selectedOptions = selectedOptions.filter(item => item.id !== selected.id)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#333" stroke="#333" stroke-width="0.5" class="bi bi-x" viewBox="0 0 16 16">
                                             <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
@@ -58,17 +58,17 @@
             >
             <!-- Paint Elements -->
             <template x-for="option in options" :key="option.id">
-                <ul x-show="filter !== '' ? option.children.some(item => item.name.includes(filter)) : true">
+                <ul x-show="filter !== '' ? option.children.some(item => item.translation.name.includes(filter)) : true">
                     <li class="text-xs text-gray-500 font-bold" x-text="option.name"></li>
                     <ul class="ml-1 mt-1">
                         <!-- Print Group Elements -->
                         <template x-for="choice in option.children">
                             <li
-                                x-show="filter !== '' ? choice.name.includes(filter) : true"
+                                x-show="filter !== '' ? choice.translation.name.includes(filter) : true"
                                 :class="{'bg-gray-200' : selectedOptions.some(item =>  item.id === choice.id)}"
                                 x-on:click="update = true; selectedOptions.some(item =>  item.id === choice.id) ? selectedOptions = selectedOptions.filter(item => item.id !== choice.id) : selectedOptions = [...selectedOptions, choice]"
                                 class="text-sm cursor-pointer text-gray-800 font-normal p-1.5 w-full hover:bg-gray-200"
-                                x-text="choice.name"
+                                x-text="choice.translation.name"
                             >
                             </li>
                         </template>
