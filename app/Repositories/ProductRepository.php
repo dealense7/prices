@@ -50,7 +50,8 @@ class ProductRepository implements ProductRepositoryContract
             ->with([
                 'categories.translation',
                 'tags.translation',
-                'images'
+                'images',
+                'translation'
             ])
             ->whereIn('id', $productIds);
 
@@ -82,6 +83,7 @@ class ProductRepository implements ProductRepositoryContract
                     $query->where('show', true);
                 }
             ])
+            ->with('translation')
             ->orderByDesc('all_products_count')
             ->limit(4)
             ->has('allProducts', '>=', 14)
@@ -105,7 +107,7 @@ class ProductRepository implements ProductRepositoryContract
                 'company',
                 'prices',
                 'images',
-                'translation'
+                'translation',
             ])
             ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND active = 1) DESC')
             ->whereIn('id', $items->pluck('allProducts.*.id')->flatten()->toArray())
