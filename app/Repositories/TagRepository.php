@@ -15,10 +15,10 @@ class TagRepository implements TagRepositoryContract
         $model = $this->getModel();
         $items = $model->filterByKeyword($filters)
             ->with([
-                'children',
-                'translations'
+                'children.translation',
+                'translation'
             ])
-            ->whereNotNull('parent_id');
+            ->whereNull('parent_id');
 
         foreach ($model->parseSort($sort) as $column => $direction) {
             $items = $items->orderBy($column, $direction);

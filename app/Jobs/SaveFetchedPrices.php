@@ -59,16 +59,27 @@ class SaveFetchedPrices implements ShouldQueue
         return DB::table((new Product())->getTable())
             ->select(['id', 'code', 'deleted_at'])
             ->whereIn('code', $codes)
+            ->whereNull('deleted_at')
             ->get();
     }
 
     private function createPrice(ProductDto $item, int $id, string $priceTable): void
     {
+        DB::table($priceTable)
+            ->where('product_id', $id)
+            ->where('store_id', $this->storeId)
+            ->where('active', true)
+            ->update([
+                'active' => false,
+            ]);
+
         DB::table($priceTable)->insert([
             'product_id'  => $id,
             'price'       => $item->price,
             'store_id'    => $this->storeId,
-            'provider_id' => $this->providerId
+            'provider_id' => $this->providerId,
+            'created_at'  => now(),
+            'active'      => true
         ]);
     }
 }

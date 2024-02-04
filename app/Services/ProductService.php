@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\Repositories\CompanyRepositoryContract;
 use App\Contracts\Repositories\ProductRepositoryContract;
+use App\Enums\Languages;
 use App\Exceptions\ItemNotFoundException;
 use App\Models\Product\Product;
 use App\Support\Collection;
@@ -30,6 +31,11 @@ class ProductService
     public function getProductsGroupedByCategory(): Collection
     {
         return $this->repository->getProductsGroupedByCategory();
+    }
+
+    public function getProducts(array $filters = []): LengthAwarePaginator
+    {
+        return $this->repository->getProducts($filters);
     }
 
     public function findById(int $id): ?Product
@@ -69,13 +75,22 @@ class ProductService
     public function update(Product $item, array $data): Product
     {
         if (
-            !empty($data['name'])
-            || !empty($data['show'])
+            !empty($data['show'])
         ) {
             $this->repository->update($item, [
-                'name' => data_get($data, 'name', $item->getName()),
                 'show' => data_get($data, 'show', $item->getShow())
             ]);
+        }
+        if (
+            !empty($data['name'])
+        ) {
+            $this->repository->createOrUpdateTranslation(
+                $item,
+                [
+                    'name'        => data_get($data, 'name', $item->translation->getName()),
+                    'language_id' => Languages::Georgian->value
+                ]
+            );
         }
 
         if (isset($data['categories'])) {

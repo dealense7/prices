@@ -62,6 +62,10 @@ class GlovoParser extends Parser
 
     public function getPrice(array $item): int
     {
+        $promotion = Arr::get($item, 'promotion');
+        if ($promotion !== null) {
+            return intval(round($promotion['price'], 3) * 100);
+        }
         return intval(round($item['priceInfo']['amount'], 3) * 100);
     }
 

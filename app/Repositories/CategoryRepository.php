@@ -32,7 +32,11 @@ class CategoryRepository implements CategoryRepositoryContract
     public function findById(int $id): ?Category
     {
         /** @var Category|null $item */
-        $item = $this->getModel()->query()->where('id', $id)->first();
+        $item = $this->getModel()->query()
+            ->with([
+                'translation'
+            ])
+            ->where('id', $id)->first();
 
         return $item;
     }

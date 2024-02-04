@@ -22,7 +22,11 @@ abstract class Parser
     public function fetchData(string $keyword): void
     {
         try {
-            $this->data = Http::withoutVerifying()->get($this->url.urlencode($keyword))->json();
+            $this->data = Http::withoutVerifying()
+                ->withHeaders([
+                    'User-Agent' =>     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                ])
+                ->get($this->url.urlencode($keyword))->json();
         } catch (\Exception $e) {
             dump($e->getMessage());
             dd($this->url.urlencode($keyword));

@@ -22,23 +22,20 @@ class TagSeeder extends Seeder
         /** @var TagType $item */
         foreach ($items as $item) {
 
-            if ($tags->firstWhere('id', $item->value) === null) {
-                $tagId = Tag::query()->firstOrCreate(
-                    [
-                        'id'   => $item->value,
-                        'type' => $item->value
-                    ]
-                );
+            $tag = Tag::query()->create(
+                [
+                    'id'   => $item->value,
+                    'type' => $item->value
+                ]
+            );
 
-                foreach ($item->text() as $languageId => $translation) {
-                    TagTranslation::query()->create([
-                        'tag_id'      => $tagId,
-                        'language_id' => $languageId,
-                        'name'        => $translation
-                    ]);
-                }
+            foreach ($item->text() as $languageId => $translation) {
+                TagTranslation::query()->create([
+                    'tag_id'      => $item->value,
+                    'language_id' => $languageId,
+                    'name'        => $translation
+                ]);
             }
-
         }
     }
 }

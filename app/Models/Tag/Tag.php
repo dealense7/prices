@@ -46,6 +46,11 @@ class Tag extends Model
         return $this->show;
     }
 
+    public function getNameAttribute(): string
+    {
+        return $this->translation->name;
+    }
+
     public function children(): HasMany
     {
         return $this->hasMany(Tag::class, 'parent_id');

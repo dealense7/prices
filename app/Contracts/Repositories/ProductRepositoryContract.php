@@ -19,9 +19,13 @@ interface ProductRepositoryContract
 
     public function getProductsGroupedByCategory(): Collection;
 
+    public function getProducts(array $filters = []): LengthAwarePaginator;
+
     public function findById(int $id): ?Product;
 
     public function update(Product $item, array $data): Product;
+
+    public function createOrUpdateTranslation(Product $item, array $data): Product;
 
     public function syncCategories(Product $item, array $ids): Product;
 

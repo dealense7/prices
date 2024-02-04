@@ -71,7 +71,6 @@ class SaveFetchedProduct implements ShouldQueue
             ]);
 
         $this->createTranslations($productId, $item->name);
-        $this->createTag($productId, $item->tag, $item->tagName);
         $this->createCompany($productId, $item->companyName);
         $this->createCategory($productId);
 

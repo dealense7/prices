@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
@@ -28,6 +29,7 @@ use Illuminate\Support\Collection;
  * @property Collection images
  *
  * @method filterByKeyword(array $filters): Builder
+ * @method filterByCategory(array $filters): Builder
  */
 class Product extends Model
 {
@@ -44,7 +46,7 @@ class Product extends Model
 
     public function getNameAttribute(): string
     {
-        return $this->translations->firstWhere('language_id', Languages::Georgian->value)->name;
+        return $this->translation->name;
     }
 
     public function getCompanyId(): int
@@ -109,6 +111,11 @@ class Product extends Model
         return $this->hasMany(ProductPrice::class, 'product_id')->where('active', true)->orderBy('price');
     }
 
+    public function translation(): HasOne
+    {
+        return $this->hasOne(ProductTranslation::class, 'product_id')->where('language_id', Languages::Georgian->value);
+    }
+
     public function translations(): HasMany
     {
         return $this->hasMany(ProductTranslation::class, 'product_id');
@@ -122,6 +129,11 @@ class Product extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'product_to_categories');
+    }
+
+    public function parentCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'product_to_categories', 'product_id', 'parent_category_id');
     }
 
     public function tags(): BelongsToMany
@@ -141,4 +153,26 @@ class Product extends Model
             $query->where('name', 'like', '%'.$keyword.'%');
         });
     }
+
+    public function scopeFilterByCategories(Builder $builder, array $filters): Builder
+    {
+        return $builder->when(!empty($filters['categoryIds']), static function (Builder $query) use ($filters) {
+            $categoryIds = $filters['categoryIds'];
+            $query->whereHas('categories', static function (Builder $query) use ($categoryIds) {
+                $query->whereIn('id', $categoryIds);
+            });
+        });
+    }
+
+    public function scopeFilterByParentCategories(Builder $builder, array $filters): Builder
+    {
+        return $builder->when(!empty($filters['parentCategoryIds']), static function (Builder $query) use ($filters) {
+            $categoryIds = $filters['parentCategoryIds'];
+            $query->whereHas('parentCategories', static function (Builder $query) use ($categoryIds) {
+                $query->whereIn('id', $categoryIds);
+            });
+        });
+    }
 }
+
+

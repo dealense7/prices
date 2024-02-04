@@ -9,6 +9,7 @@ use App\Models\Category\Category;
 use App\Models\File;
 use App\Models\Product\Product;
 use App\Models\Product\ProductPrice;
+use App\Models\Product\ProductTranslation;
 use App\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
@@ -32,6 +33,10 @@ class ProductRepository implements ProductRepositoryContract
             ->selectRaw($productPriceTable.'.product_id, COUNT('.$productPriceTable.'.product_id) AS count')
             ->join((new File())->getTable(), $productPriceTable.'.product_id', '=', 'files.fileable_id')
             ->join((new Product())->getTable(), $productPriceTable.'.product_id', '=', 'products.id')
+            ->join((new ProductTranslation())->getTable(), $productPriceTable.'.product_id', '=',
+                (new ProductTranslation())->getTable().'.id')
+            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ხორცი%')
+            ->where('products.show', false)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)
             ->groupBy($productPriceTable.'.product_id')
@@ -68,35 +73,41 @@ class ProductRepository implements ProductRepositoryContract
     {
 
         $items = Category::query()
-//            ->whereHas('products', static function ($query) {
-//                $query->where('show', true);
-//            })
+            ->whereHas('allProducts', static function ($query) {
+                $query->where('show', true);
+            })
             ->whereNull('parent_id')
-            ->withCount('allProducts')
-//            ->orderByDesc('all_products_count')
+            ->withCount([
+                'allProducts' => static function ($query) {
+                    $query->where('show', true);
+                }
+            ])
+            ->orderByDesc('all_products_count')
             ->limit(4)
-            ->has('allProducts', '>=', 12)
+            ->has('allProducts', '>=', 14)
             ->get()
             ->each(function ($item) {
                 $item->load([
                     'allProducts' => static function ($query) {
                         $query
                             ->select('id')
-//                            ->where('show', true)
-//                            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND created_at > "'.now()->subDay()->toDateString().'") DESC')
-                            ->take(12);
+                            ->where('show', true)
+                            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND created_at > "'.now()->subDay()->toDateString().'") DESC')
+                            ->take(14);
                     }
                 ]);
             });
 
         $products = Product::query()
             ->with([
-                'categories',
-                'tags',
+                'categories.translation',
+                'tags.translation',
                 'company',
                 'prices',
-                'images'
+                'images',
+                'translation'
             ])
+            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND active = 1) DESC')
             ->whereIn('id', $items->pluck('allProducts.*.id')->flatten()->toArray())
             ->get();
 
@@ -112,13 +123,33 @@ class ProductRepository implements ProductRepositoryContract
         return $items;
     }
 
+    public function getProducts(array $filters = []): LengthAwarePaginator
+    {
+        $model    = $this->getModel();
+        return $model->query()
+            ->with([
+                'categories.translation',
+                'tags.translation',
+                'company',
+                'prices',
+                'images',
+                'translation'
+            ])
+            ->where('show', true)
+            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND active = 1) DESC')
+            ->filterByCategories($filters)
+            ->filterByParentCategories($filters)
+            ->paginate(21);
+    }
+
     public function findById(int $id): ?Product
     {
         /** @var Product|null $item */
         $item = $this->getModel()
             ->query()
             ->with([
-                'prices.store.logo'
+                'prices.store.logo',
+                'translation'
             ])
             ->where('id', $id)->first();
 
@@ -129,6 +160,28 @@ class ProductRepository implements ProductRepositoryContract
     {
         $item->fill($data);
         $item->saveOrFail();
+
+        $item->load([
+            'categories',
+            'tags',
+            'images'
+        ]);
+
+        return $item;
+    }
+
+    public function createOrUpdateTranslation(Product $item, array $data): Product
+    {
+        ProductTranslation::query()->updateOrCreate(
+            [
+                'product_id'  => $item->getId(),
+                'language_id' => $data['language_id']
+            ],
+            [
+                'name'        => $data['name'],
+                'language_id' => $data['language_id']
+            ]
+        );
 
         $item->load([
             'categories',

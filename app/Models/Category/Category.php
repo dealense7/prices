@@ -7,6 +7,7 @@ use App\Models\Model;
 use App\Models\Product\Product;
 use App\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -37,9 +38,7 @@ class Category extends Model
 
     public function getNameAttribute(): string
     {
-        return $this->translations
-            ->firstWhere('language_id', Languages::Georgian->value)
-            ->name;
+        return $this->translation->name;
     }
 
     public function getSlug(): string
