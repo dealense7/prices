@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <x-list.Categories :categories="$categories" />
+    <x-list.categories :categories="$categories" />
 
 
 
@@ -38,14 +38,14 @@
                 @endphp
 
                 @foreach($products as $product)
-                    <x-list.Item :product="$product" />
+                    <x-list.item :product="$product" />
                 @endforeach
                 <div class="col-span-7">
                     {{ $products->appends(request()->query())->links() }}
                 </div>
             </div>
 
-            <x-list.Modal />
+            <x-list.modal />
         </div>
     </div>
 @endsection
