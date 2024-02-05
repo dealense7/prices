@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\list;
+namespace App\View\Components\List;
 
 use App\Support\Collection;
 use Closure;
