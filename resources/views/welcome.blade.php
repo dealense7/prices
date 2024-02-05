@@ -4,7 +4,7 @@
 
     <x-home.slider/>
 
-    <x-list.categories :categories="$categories" />
+    <x-list.Categories :categories="$categories" />
 
 
     <div x-data="{
@@ -48,12 +48,12 @@
                         \Carbon\Carbon::setLocale('ka');
                     @endphp
                     @foreach($category->allProducts as $product)
-                        <x-list.item :product="$product" />
+                        <x-list.Item :product="$product" />
                     @endforeach
                 </div>
             @endforeach
 
-                <x-list.modal />
+                <x-list.Modal />
         </div>
     </div>
 @endsection
