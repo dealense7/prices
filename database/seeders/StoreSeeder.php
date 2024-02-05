@@ -90,6 +90,42 @@ class StoreSeeder extends Seeder
                 ]
             ],
             [
+                'id'   => Stores::Magniti->value,
+                'name' => Stores::Magniti->text(),
+                'year' => 2015,
+                'img'  => 'magniti.png',
+                'urls' => [
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/251808/addresses/389138/search?query='
+                    ]
+                ]
+            ],
+            [
+                'id'   => Stores::Magniti->value,
+                'name' => Stores::Magniti->text(),
+                'year' => 2015,
+                'img'  => 'magniti.png',
+                'urls' => [
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/251808/addresses/389138/search?query='
+                    ]
+                ]
+            ],
+            [
+                'id'   => Stores::Europroduct->value,
+                'name' => Stores::Europroduct->text(),
+                'year' => 2015,
+                'img'  => 'europroduct.png',
+                'urls' => [
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/95869/addresses/181642/search?query='
+                    ]
+                ]
+            ],
+            [
                 'id'   => Stores::OriNabiji->value,
                 'name' => Stores::OriNabiji->text(),
                 'year' => 2010,

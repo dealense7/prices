@@ -9,8 +9,9 @@ enum Stores: int
     case Nikora    = 3;
     case Spar      = 4;
     case Agrohub   = 5;
-
     case OriNabiji = 6;
+    case Magniti   = 7;
+    case Europroduct   = 8;
 
     public function text(): string
     {
@@ -21,6 +22,8 @@ enum Stores: int
             Stores::Spar => 'სპარი',
             Stores::Agrohub => 'აგროჰაბი',
             Stores::OriNabiji => 'ორი ნაბიჯი',
+            Stores::Magniti => 'მაგნიტი',
+            Stores::Europroduct => 'ევროპროდუქტი',
         };
     }
 }
