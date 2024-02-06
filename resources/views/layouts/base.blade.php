@@ -7,11 +7,11 @@
 
             <title>@yield('title') - {{ config('app.name') }}</title>
         @else
-            <title>{{ config('app.name') }}</title>
+            <title>ურიკა | Trolley</title>
         @endif
 
         <!-- Favicon -->
-		<link rel="shortcut icon" href="{{ url(asset('favicon.ico')) }}">
+		<link rel="shortcut icon" href="{{ Vite::asset('resources/imgs/logo.ico') }}">
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css">

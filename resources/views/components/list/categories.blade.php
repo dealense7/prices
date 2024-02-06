@@ -30,7 +30,7 @@
                     </li>
                 @endforeach
             </ul>
-            <span class="font-normal text-xs hover:bg-gray-200 rounded-[4px] cursor-pointer p-1">ყველა</span>
+            <a  href="items?filters[parentCategoryIds][]={{$category->id}}" class="font-normal text-xs hover:bg-gray-200 rounded-[4px] cursor-pointer p-1">ყველა</a>
         </div>
     @endforeach
 </div>

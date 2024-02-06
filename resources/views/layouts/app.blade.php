@@ -9,16 +9,20 @@
                         <img src="{{ Vite::asset('resources/imgs/logo.png') }}" class="h-full w-full object-contain">
                     </div>
                     <div class="ml-2">
-                        <h1 class="font-bolder text-sm text-gray-900">კალათა</h1>
+                        <h1 class="font-bolder text-sm text-gray-900">ურიკა</h1>
                         <span class="font-normal text-[10px] text-gray-800">სურსათი უკეთეს ფასად</span>
                     </div>
                 </a>
                 <div class="col-span-1 flex items-center justify-center">
                     <div class="w-4/5 h-[41px] bg-[#e1e1e1] flex items-center rounded-[3px]">
                         <label class="w-full">
-                            <input type="text"
-                                   class="bg-transparent border-none w-full text-xs focus:ring-0 font-normal"
-                                   placeholder="რას ეძებთ?..">
+                            <form action="/items" method="get">
+                                <input type="text"
+                                       name="filters[keyword]"
+                                       value="{{data_get(request()->get('filters', []), 'keyword', '')}}"
+                                       class="bg-transparent border-none w-full text-xs focus:ring-0 font-normal"
+                                       placeholder="რას ეძებთ?..">
+                            </form>
                         </label>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#474747"
                              class="bi bi-search mr-2" viewBox="0 0 16 16">

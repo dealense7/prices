@@ -150,7 +150,15 @@ class Product extends Model
     {
         return $builder->when(!empty($filters['keyword']), static function (Builder $query) use ($filters) {
             $keyword = $filters['keyword'];
-            $query->where('name', 'like', '%'.$keyword.'%');
+            $query->whereHas('translation', static function (Builder $query) use ($keyword) {
+                $query->where('name', 'like', '%'.$keyword.'%');
+            })->orWhereHas('company', static function (Builder $query) use ($keyword) {
+                $query->where('name', 'like', '%'.$keyword.'%');
+            })->orWhereHas('categories', static function (Builder $query) use ($keyword) {
+                $query->whereHas('translation', static function (Builder $query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%');
+                });
+            });
         });
     }
 

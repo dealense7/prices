@@ -35,7 +35,7 @@ class ProductRepository implements ProductRepositoryContract
             ->join((new Product())->getTable(), $productPriceTable.'.product_id', '=', 'products.id')
             ->join((new ProductTranslation())->getTable(), $productPriceTable.'.product_id', '=',
                 (new ProductTranslation())->getTable().'.id')
-            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ხორცი%')
+            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ყველი%')
             ->where('products.show', false)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)
@@ -141,6 +141,7 @@ class ProductRepository implements ProductRepositoryContract
             ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND active = 1) DESC')
             ->filterByCategories($filters)
             ->filterByParentCategories($filters)
+            ->filterByKeyword($filters)
             ->paginate(21);
     }
 

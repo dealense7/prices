@@ -3,12 +3,14 @@
     <div class="grid-cols-11 grid gap-10">
         <div class="col-span-1"></div>
         <div class="col-span-6 bg-gray-100 h-[280px] flex items-center justify-between relative">
-            <div class="ml-4">
+            <div class="ml-4" x-data="{open:false}">
                 <h2 class="font-bolder text-xl text-gray-800">შეადარეთ სუპერმარკეტის ფასები</h2>
                 <p class="mt-2 font-normal text-xs text-gray-700">
-                    შეადარეთ 100-ზე მეტი პროდუქტი სუპერმარკეტებსა და მაღაზიებში.
+                    შეადარეთ 1000-ზე მეტი პროდუქტი სუპერმარკეტებსა და მაღაზიებში.
                 </p>
-                <button class="text-gray-800 font-medium text-xs mt-10 bg-white p-2 px-3">ყველა პროდუქტი</button>
+                <button class="text-gray-800 font-medium text-xs mt-10 bg-white p-2 px-3" x-on:click="open=true">გზამკვლევი</button>
+                <x-roadmap/>
+
             </div>
             <div class="h-[240px] absolute right-0 bottom-0">
                 <img src="{{ Vite::asset('resources/imgs/banner1.png') }}" class="h-full w-full object-contain">
