@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductSaveRequest;
 use App\Services\ProductService;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -33,12 +34,29 @@ class ProductController extends Controller
         return true;
     }
 
-    public function getPrices(
+    public function getPrice(
         int $id,
         ProductService $service
     ) {
         $item = $service->findOrFailById($id);
 
-        return $service->getPrices($item);
+        return $service->getPrice($item);
+    }
+
+    public function getProducts(
+        Request $request,
+        ProductService $service
+    ) {
+        $ids = [];
+        $requestIds = $request->get('ids', []);
+        foreach ($requestIds as $requestId)
+        {
+            $id = intval($requestId);
+            if ($id){
+                $ids[] = $id;
+            }
+        }
+
+        return $service->getProductsList($ids);
     }
 }

@@ -26,6 +26,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/70098/addresses/136826/search?query='
+                    ],
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/70098/addresses/136831/search?query='
                     ]
                 ]
             ],
@@ -38,6 +42,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/96349/addresses/182498/search?query='
+                    ],
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/96349/addresses/183885/search?query='
                     ]
                 ]
             ],
@@ -50,6 +58,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/37350/addresses/79560/search?query='
+                    ],
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/37350/addresses/174372/search?query='
                     ]
                 ]
             ],
@@ -62,6 +74,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/26609/addresses/162083/search?query='
+                    ],
+                    [
+                        'provider_id' => Providers::Glovo->value,
+                        'url'         => 'https://api.glovoapp.com/v3/stores/26609/addresses/369777/search?query='
                     ]
                 ]
             ],
@@ -74,30 +90,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/169869/addresses/289571/search?query='
-                    ]
-                ]
-            ],
-            [
-                'id'   => Stores::Agrohub->value,
-                'name' => Stores::Agrohub->text(),
-                'year' => 2016,
-                'img'  => 'agrohub.png',
-                'urls' => [
+                    ],
                     [
                         'provider_id' => Providers::Glovo->value,
-                        'url'         => 'https://api.glovoapp.com/v3/stores/169869/addresses/289571/search?query='
-                    ]
-                ]
-            ],
-            [
-                'id'   => Stores::Magniti->value,
-                'name' => Stores::Magniti->text(),
-                'year' => 2015,
-                'img'  => 'magniti.png',
-                'urls' => [
-                    [
-                        'provider_id' => Providers::Glovo->value,
-                        'url'         => 'https://api.glovoapp.com/v3/stores/251808/addresses/389138/search?query='
+                        'url'         => 'https://api.glovoapp.com/v3/stores/169869/addresses/595140/search?query='
                     ]
                 ]
             ],

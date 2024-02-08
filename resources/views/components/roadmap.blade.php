@@ -49,8 +49,8 @@
                         </p>
                     </li>
                     <li class="p-2 text-xs font-normal my-1 w-full border rounded-[3px]">
-                        <span class="bg-gray-300 p-1 text-[9px] text-gray-700 rounded-[3px]">
-                            არ დაწყებულა
+                        <span class="bg-yellow-400 p-1 text-[9px] text-gray-700 rounded-[3px]">
+                            პროგრესშია
                         </span>
                         <h4 class="my-2 font-medium">კალათა</h4>
                         <p class="text-gray-500">

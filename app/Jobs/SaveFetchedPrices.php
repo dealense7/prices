@@ -68,18 +68,47 @@ class SaveFetchedPrices implements ShouldQueue
         DB::table($priceTable)
             ->where('product_id', $id)
             ->where('store_id', $this->storeId)
-            ->where('active', true)
+            ->where('created_at', '<=', now()->subWeek()->toDateString())
             ->update([
                 'active' => false,
             ]);
 
-        DB::table($priceTable)->insert([
-            'product_id'  => $id,
-            'price'       => $item->price,
-            'store_id'    => $this->storeId,
-            'provider_id' => $this->providerId,
-            'created_at'  => now(),
-            'active'      => true
-        ]);
+        $price = DB::table($priceTable)->select('price')
+            ->where('product_id', $id)
+            ->where('store_id', $this->storeId)
+            ->whereDate('created_at', today()->toDateString())
+            ->first()?->price;
+
+        if (
+            $price === null
+            ||
+            (
+                $price !== null &&
+                ($price ?? 0) > $item->price
+            )
+        ) {
+            DB::table($priceTable)->select('price')
+                ->where('product_id', $id)
+                ->where('store_id', $this->storeId)
+                ->whereDate('created_at', today()->toDateString())
+                ->delete();
+
+            DB::table($priceTable)
+                ->where('product_id', $id)
+                ->where('store_id', $this->storeId)
+                ->where('active', true)
+                ->update([
+                    'active' => false,
+                ]);
+
+            DB::table($priceTable)->insert([
+                'product_id'  => $id,
+                'price'       => $item->price,
+                'store_id'    => $this->storeId,
+                'provider_id' => $this->providerId,
+                'created_at'  => now(),
+                'active'      => true
+            ]);
+        }
     }
 }

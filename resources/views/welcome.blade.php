@@ -35,9 +35,9 @@
         >
 
             @foreach($products as $category)
-                <div class="grid grid-cols-7 mt-3 gap-3">
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 mt-3 gap-3">
 
-                    <div class="col-span-7 flex items-center justify-between">
+                    <div class="sm:col-span-2 md:col-span-3 lg:col-span-5 xl:col-span-7 flex items-center justify-between">
                         <h3 class="font-bold text-xl">{{$category->name}}</h3>
                         <a href="items?filters[parentCategoryIds][]={{$category->id}}" class="flex flex-col items-end font-normal text-xs">
                             <small>ყველას ნახვა</small>
@@ -48,6 +48,7 @@
                         \Carbon\Carbon::setLocale('ka');
                     @endphp
                     @foreach($category->allProducts as $product)
+
                         <x-list.item :product="$product" />
                     @endforeach
                 </div>

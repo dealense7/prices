@@ -35,7 +35,7 @@ class ProductRepository implements ProductRepositoryContract
             ->join((new Product())->getTable(), $productPriceTable.'.product_id', '=', 'products.id')
             ->join((new ProductTranslation())->getTable(), $productPriceTable.'.product_id', '=',
                 (new ProductTranslation())->getTable().'.id')
-            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ყველი%')
+            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ტომატ%')
             ->where('products.show', false)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)
@@ -84,7 +84,7 @@ class ProductRepository implements ProductRepositoryContract
                 }
             ])
             ->with('translation')
-            ->orderByDesc('all_products_count')
+//            ->inRandomOrder()
             ->limit(4)
             ->has('allProducts', '>=', 14)
             ->get()
@@ -143,6 +143,27 @@ class ProductRepository implements ProductRepositoryContract
             ->filterByParentCategories($filters)
             ->filterByKeyword($filters)
             ->paginate(21);
+    }
+
+    public function getProductsList(array $filters = []): Collection
+    {
+        $model    = $this->getModel();
+        return $model->query()
+            ->with([
+                'categories.translation',
+                'tags.translation',
+                'company',
+                'prices.store.logo',
+                'images',
+                'translation'
+            ])
+            ->where('show', true)
+            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND active = 1) DESC')
+            ->filterByIds($filters)
+            ->filterByCategories($filters)
+            ->filterByParentCategories($filters)
+            ->filterByKeyword($filters)
+            ->get();
     }
 
     public function findById(int $id): ?Product
@@ -231,5 +252,3 @@ class ProductRepository implements ProductRepositoryContract
         return new ProductPrice();
     }
 }
-
-

@@ -4,14 +4,14 @@ namespace App\Enums;
 
 enum Stores: int
 {
-    case Carrefour = 1;
-    case Goodwill  = 2;
-    case Nikora    = 3;
-    case Spar      = 4;
-    case Agrohub   = 5;
-    case OriNabiji = 6;
-    case Magniti   = 7;
-    case Europroduct   = 8;
+    case Carrefour   = 1;
+    case Goodwill    = 2;
+    case Nikora      = 3;
+    case Spar        = 4;
+    case Agrohub     = 5;
+    case OriNabiji   = 6;
+    case Magniti     = 7;
+    case Europroduct = 8;
 
     public function text(): string
     {

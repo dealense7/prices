@@ -54,7 +54,7 @@ class ProductService
         return $item;
     }
 
-    public function getPrices(Product $product): array
+    public function getPrice(Product $product): array
     {
         Carbon::setLocale('ka');
         return $product
@@ -70,6 +70,11 @@ class ProductService
             })
             ->toArray();
 
+    }
+
+    public function getProductsList(array $ids): Collection
+    {
+        return $this->repository->getProductsList(['ids' => $ids]);
     }
 
     public function update(Product $item, array $data): Product

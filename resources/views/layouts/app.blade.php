@@ -44,26 +44,30 @@
                         <div class="h-6 rounded-md w-full relative">
                             <img alt="like" src="{{ Vite::asset('resources/imgs/like.png') }}"
                                  class="h-full w-full object-contain">
-                            <span
-                                class="absolute -right-2 -top-1 bg-[#bde6c6] p-1 text-[10px] font-bolder flex items-center justify-center text-gray-800 rounded-sm h-4 w-4">
-                                3
-                            </span>
+{{--                            <span--}}
+{{--                                class="absolute -right-2 -top-1 bg-[#bde6c6] p-1 text-[10px] font-bolder flex items-center justify-center text-gray-800 rounded-sm h-4 w-4">--}}
+{{--                                3--}}
+{{--                            </span>--}}
                         </div>
                     </div>
 
-                    <div class="flex items-center">
-                        <div class="h-6 rounded-md w-full relative">
-                            <img alt="cart" src="{{ Vite::asset('resources/imgs/cart.png') }}"
-                                 class="h-full w-full object-contain">
-                            <span
-                                class="absolute -right-2 -top-1 bg-[#bde6c6] p-1 text-[10px] font-bolder flex items-center justify-center text-gray-800 rounded-sm h-4 w-4">
-                                12
+                    <div  x-data="{open:false}">
+                        <div class="flex items-center" x-data="cartItems()" x-init="getItems()">
+                            <div class="h-6 rounded-md w-full relative cursor-pointer" x-on:click="open = true">
+                                <img alt="cart" src="{{ Vite::asset('resources/imgs/cart.png') }}"
+                                     class="h-full w-full object-contain">
+                                <span id="cartItemsCount" class="absolute hidden -right-2 -top-1 bg-[#bde6c6] p-1 text-[10px] font-bolder flex items-center justify-center text-gray-800 rounded-sm h-4 w-4">
+                                0
                             </span>
+                            </div>
+                            <div class="ml-3 font-medium text-xs w-fill cursor-pointer" x-on:click="open = true">
+                                <span class="text-gray-700 text-[10px] flex">ჯამში <span class="ml-1 w-max text-green-700 hidden" id="totalSavedPriceCart">- 1050.78 ₾</span></span>
+                                <pre><h4 class="flex w-full items-center">₾ <span id="totalPriceCart">0.00</span> </h4></pre>
+                            </div>
+                            <x-cart/>
                         </div>
-                        <div class="ml-3 font-medium text-xs">
-                            <span class="text-gray-700 text-[9px]">ჯამში</span>
-                            <pre><h4 class="flex w-full items-center">₾ 145.78</h4></pre>
-                        </div>
+
+
                     </div>
                 </div>
             </nav>

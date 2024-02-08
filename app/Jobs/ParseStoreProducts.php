@@ -42,14 +42,14 @@ class ParseStoreProducts implements ShouldQueue
             foreach ($keywords as $word) {
                 $parser->fetchData($word['name']);
                 $fetchedItems = $parser->getItems();
-                $totalItems += count($fetchedItems);
+                $totalItems   += count($fetchedItems);
 
                 SaveFetchedPrices::dispatch($fetchedItems, $this->store->getId(), $url->provider->getId());
             }
+            sleep(20);
         }
 
         dump($this->store->name.' items:'.$totalItems);
-        sleep(20);
     }
 
     private function getKeywords(): array

@@ -23,6 +23,8 @@ interface ProductRepositoryContract
 
     public function findById(int $id): ?Product;
 
+    public function getProductsList(array $filters = []): Collection;
+
     public function update(Product $item, array $data): Product;
 
     public function createOrUpdateTranslation(Product $item, array $data): Product;

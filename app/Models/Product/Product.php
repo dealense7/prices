@@ -181,6 +181,14 @@ class Product extends Model
             });
         });
     }
+
+    public function scopeFilterByIds(Builder $builder, array $filters): Builder
+    {
+        return $builder->when(!empty($filters['ids']), static function (Builder $query) use ($filters) {
+            $ids = $filters['ids'];
+            $query->whereIn('id', $ids);
+        });
+    }
 }
 
 
