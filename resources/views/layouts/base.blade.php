@@ -10,6 +10,25 @@
             <title>ურიკა | Trolley</title>
         @endif
 
+        <meta name="description" content="შეადარეთ 1000-ზე მეტი პროდუქტი სუპერმარკეტებსა და მაღაზიებში." />
+        <meta name="keywords" content="" />
+
+        <meta name="author" content="dealense" />
+        <meta name="application-name" content="ურიკა | Trolley" />
+
+        <!-- For Facebook -->
+        <meta property="og:title" content="Trolley" />
+        <meta property="og:type" content="product" />
+        <meta property="og:image" content="{{ Vite::asset('resources/imgs/Trolley.png') }}" />
+        <meta property="og:url" content="urika.ge" />
+        <meta property="og:description" content="შეადარეთ 1000-ზე მეტი პროდუქტი სუპერმარკეტებსა და მაღაზიებში." />
+
+        <!-- For Twitter -->
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Trolley" />
+        <meta name="twitter:description" content="შეადარეთ 1000-ზე მეტი პროდუქტი სუპერმარკეტებსა და მაღაზიებში." />
+        <meta name="twitter:image" content="{{ Vite::asset('resources/imgs/Trolley.png') }}" />
+
         <!-- Favicon -->
 		<link rel="shortcut icon" href="{{ Vite::asset('resources/imgs/logo.ico') }}">
 
