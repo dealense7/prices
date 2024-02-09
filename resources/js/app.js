@@ -58,35 +58,54 @@ const fetchPrice = async (items) => {
     return fetchedItems;
 }
 
-
+window.productCartIds = [];
 
 window.cartItems = () => {
     return {
         items: [],
         async getItems() {
-            this.items = [];
 
-            const productCartIds = JSON.parse(localStorage.getItem("itemIds") ?? '{}');
+            window.productCartIds = JSON.parse(localStorage.getItem("itemIds") ?? '{}');
 
-            productCartIds.forEach(item => {
+            window.productCartIds.forEach(item => {
                 document.getElementById('addProductToCart' + item.id).classList.add('bg-green-400');
             })
 
-            if (productCartIds.length > 0) {
+            if (window.productCartIds.length > 0) {
                 document.getElementById('cartItemsCount').classList.remove('hidden');
-                document.getElementById('cartItemsCount').innerHTML = productCartIds.length;
-                this.items.push(...await fetchPrice(productCartIds));
+                document.getElementById('cartItemsCount').innerHTML = window.productCartIds.length.toString();
+                this.items = [...await fetchPrice(window.productCartIds)];
+            }else{
+                document.getElementById('cartItemsCount').classList.add('hidden');
+                document.getElementById('totalPriceCartModal').innerHTML = '0.00 ₾'
+                document.getElementById('totalSavedCartModal').innerHTML = '0.00 ₾'
+                document.getElementById('totalProducts').innerHTML = 'რაოდენობა: 0'
+
+                this.items = [];
             }
 
         }
     }
 }
 
-
+window.removeProduct = (id) => {
+    removeFromLocalStorage(id)
+    addClass(id)
+}
 
 window.addProduct = (id) => {
     addToLocalStorage(id)
     addClass(id)
+}
+
+window.toggleProduct = (id) => {
+    let items = window.productCartIds;
+
+    if (!items.some(item => item.id === id)) {
+        addProduct(id);
+    } else {
+        removeProduct(id);
+    }
 }
 
 const addClass = (id) => {
@@ -98,15 +117,21 @@ const addClass = (id) => {
 }
 
 const addToLocalStorage = (id) => {
-    let items = JSON.parse(localStorage.getItem("itemIds")) ?? [];
-    if (!items.some(item => item.id === id)) {
-        items = [{id: id}, ...items]
-        localStorage.setItem("itemIds", JSON.stringify(items));
-    } else {
-        items = items.filter(item => item.id !== id);
-        localStorage.setItem("itemIds", JSON.stringify(items));
-    }
 
+    const items = [{id: id}, ...window.productCartIds]
+    window.productCartIds = items;
+
+    updateLocalStorage('itemIds', items);
+    updateCart(items)
+    fetchPrice(items)
+}
+
+const removeFromLocalStorage = (id) => {
+
+    const items = window.productCartIds.filter(item => item.id !== id);
+    window.productCartIds = items;
+
+    updateLocalStorage('itemIds', items);
     updateCart(items)
     fetchPrice(items)
 }
@@ -118,4 +143,8 @@ const updateCart = (items) => {
     } else {
         document.getElementById('cartItemsCount').classList.add('hidden');
     }
+}
+
+const updateLocalStorage =(name, items) => {
+    localStorage.setItem(name, JSON.stringify(items));
 }
