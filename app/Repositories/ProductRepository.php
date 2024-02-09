@@ -30,12 +30,12 @@ class ProductRepository implements ProductRepositoryContract
         $productPriceTable = $this->getProductPriceModel()->getTable();
 
         $products = $productPriceModel->query()
-            ->selectRaw($productPriceTable.'.product_id, COUNT('.$productPriceTable.'.product_id) AS count')
+            ->selectRaw($productPriceTable.'.product_id, COUNT(DISTINCT '.$productPriceTable.'.store_id) AS count')
             ->join((new File())->getTable(), $productPriceTable.'.product_id', '=', 'files.fileable_id')
             ->join((new Product())->getTable(), $productPriceTable.'.product_id', '=', 'products.id')
             ->join((new ProductTranslation())->getTable(), $productPriceTable.'.product_id', '=',
                 (new ProductTranslation())->getTable().'.id')
-            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ტომატ%')
+            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ლუდი%')
             ->where('products.show', false)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)

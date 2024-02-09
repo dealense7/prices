@@ -67,8 +67,7 @@ class SaveFetchedPrices implements ShouldQueue
     {
         DB::table($priceTable)
             ->where('product_id', $id)
-            ->where('store_id', $this->storeId)
-            ->where('created_at', '<=', now()->subWeek()->toDateString())
+            ->where('created_at', '<=', now()->subWeeks(2)->toDateString())
             ->update([
                 'active' => false,
             ]);
