@@ -35,7 +35,7 @@ class ProductRepository implements ProductRepositoryContract
             ->join((new Product())->getTable(), $productPriceTable.'.product_id', '=', 'products.id')
             ->join((new ProductTranslation())->getTable(), $productPriceTable.'.product_id', '=',
                 (new ProductTranslation())->getTable().'.id')
-            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%ლუდი%')
+            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%რძე%')
             ->where('products.show', false)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)

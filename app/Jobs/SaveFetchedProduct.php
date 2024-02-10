@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\DataTransferObjects\ProductDto;
 use App\Enums\Languages;
 use App\Enums\TagType;
-use App\Models\Category\Category;
 use App\Models\Company;
 use App\Models\File;
 use App\Models\Product\Product;
@@ -21,7 +20,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class SaveFetchedProduct implements ShouldQueue
 {
@@ -35,19 +33,21 @@ class SaveFetchedProduct implements ShouldQueue
     ) {
     }
 
-
     public function handle(): void
     {
         $productCodes = Arr::pluck($this->items, 'code');
         $products     = $this->getProductByCode($productCodes);
 
         $items = collect($this->items)->whereNotIn('code', $products->pluck('code')->toArray());
+
+        // How many we had to save for this time.
         dump(count($this->items).' -> '.$items->count());
 
         DB::transaction(function () use ($items) {
             /** @var ProductDto $item */
-            foreach ($items as $key => $item) {
+            foreach ($items as $item) {
                 $productId = $this->createProduct($item);
+
                 if (!empty($item->imageUrl)) {
                     $this->downloadImage($productId, $item->code, $item->imageUrl);
                 }
@@ -79,7 +79,6 @@ class SaveFetchedProduct implements ShouldQueue
 
     private function createTranslations(int $productId, string $name): void
     {
-
         DB::table((new ProductTranslation())->getTable())
             ->insert([
                 'product_id'  => $productId,
@@ -88,8 +87,7 @@ class SaveFetchedProduct implements ShouldQueue
             ]);
     }
 
-    private
-    function createTag(
+    private function createTag(
         int $productId,
         ?string $tag,
         ?string $tagName
@@ -97,6 +95,14 @@ class SaveFetchedProduct implements ShouldQueue
         $tagId = TagType::Quantity;
 
         if (!empty($tag) && !empty($tagName)) {
+
+            if ($tagName === 'გ') {
+                $tagName = 'გრ';
+            } elseif (in_array($tagName, ['ლ', 'კგ'], true) && floatval($tag) < 1) {
+                $tag     = intval($tag * 100);
+                $tagName = $tagName === 'ლ' ? 'მლ' : 'გრ';
+            }
+
             /** @var TagTranslation|null $tagTranslation */
             $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag.' '.$tagName)->first();
             $tagId          = $tagTranslation?->tag_id;
@@ -107,8 +113,13 @@ class SaveFetchedProduct implements ShouldQueue
                 if (in_array($tagName, ['გრ', 'კგ'])) {
                     $type = TagType::Weight;
                 }
+
                 if (in_array($tagName, ['მლ', 'ლ'])) {
                     $type = TagType::Size;
+                }
+
+                if (in_array($tagName, ['ც'])) {
+                    $type = TagType::Quantity;
                 }
 
                 $tagId = DB::table((new Tag())->getTable())->insertGetId([
@@ -132,8 +143,7 @@ class SaveFetchedProduct implements ShouldQueue
             ]);
     }
 
-    private
-    function createCompany(
+    private function createCompany(
         int $productId,
         ?string $companyName = null,
     ): void {
@@ -147,11 +157,9 @@ class SaveFetchedProduct implements ShouldQueue
             if ($companyId) {
                 DB::table((new Product())->getTable())->where('id', $productId)
                     ->update([
-                        'id'         => $productId,
                         'company_id' => $companyId
                     ]);
             }
-
         }
     }
 
@@ -163,11 +171,9 @@ class SaveFetchedProduct implements ShouldQueue
                 'category_id'        => $this->categoryId,
                 'parent_category_id' => $this->parentCategoryId
             ]);
-
     }
 
-    private
-    function downloadImage(
+    private function downloadImage(
         int $productId,
         int $code,
         string $url
@@ -175,21 +181,17 @@ class SaveFetchedProduct implements ShouldQueue
         if (empty($url)) {
             return;
         }
+
         $extension = null;
+        $urlLower  = strtolower($url);
 
-        if (str_contains(strtolower($url), 'jpg')) {
+        if (str_contains($urlLower, 'jpg')) {
             $extension = 'jpg';
-        }
-
-        if (str_contains(strtolower($url), 'jpeg')) {
+        } elseif (str_contains($urlLower, 'jpeg')) {
             $extension = 'jpeg';
-        }
-
-        if (str_contains(strtolower($url), 'png')) {
+        } elseif (str_contains($urlLower, 'png')) {
             $extension = 'png';
-        }
-
-        if (str_contains(strtolower($url), 'webp')) {
+        } elseif (str_contains($urlLower, 'webp')) {
             $extension = 'webp';
         }
 

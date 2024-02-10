@@ -76,6 +76,7 @@ class Product extends Model
 
     public function getSizeAttribute(): string
     {
+//        dump($this->id);
         $tag = $this->tags->first();
         return match ($tag->type) {
             TagType::Size->value => 'მლ',
