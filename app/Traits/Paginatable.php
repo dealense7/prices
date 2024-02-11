@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use Illuminate\Validation\ValidationException;
+use App\Models\Model;
 
 /**
- * @mixin \App\Models\Model
+ * @mixin Model
  */
 trait Paginatable
 {
@@ -16,17 +16,10 @@ trait Paginatable
         return $this->maxPerPage;
     }
 
-    /**
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function getValidPerPage(?int $perPage = null): int
     {
-        if (empty($perPage)) {
+        if ($perPage === null || $perPage > $this->getMaxPerPage()) {
             return $this->getPerPage();
-        }
-
-        if ($perPage > $this->getMaxPerPage()) {
-            throw ValidationException::withMessages(['perPage' => 'Max items on the page: ' . $this->getMaxPerPage()]);
         }
 
         return $perPage;

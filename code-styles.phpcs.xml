@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="longish-php-code-style" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
-    <description>Longish PHP Code Style preset</description>
+    <description>PHP Code Style</description>
 
     <rule ref="PSR12"/>
     <!--
@@ -165,7 +165,7 @@
         Extra rules from https://github.com/slevomat/coding-standard
     -->
 
-    <config name="installed_paths" value="../../../src,../../longman/php-code-style/src,../../phpcsstandards/phpcsextra,../../slevomat/coding-standard"/>
+    <config name="installed_paths" value="../../../src,../../phpcsstandards/phpcsextra,../../slevomat/coding-standard"/>
 
 
     <!-- https://github.com/PHPCSStandards/PHPCSExtra#universalarraysduplicatearraykey-books -->

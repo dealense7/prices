@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\CategoryService;
 use App\Services\CompanyService;
 use App\Services\ProductService;
 use App\Services\StoreService;
 use App\Services\TagService;
+use App\Services\V1\CategoryService;
 use Illuminate\Contracts\View\View;
 
 class DashboardController extends Controller

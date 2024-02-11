@@ -28,12 +28,8 @@ class Controller extends BaseController
 
     protected function getInputPerPage(): ?int
     {
-        $perPage = $this->getRequest()->input('perPage');
-        if ($perPage) {
-            $perPage = (int) $perPage;
-        }
-
-        return $perPage;
+        $perPage = (int) $this->getRequest()->input('perPage');
+        return $perPage ?: null;
     }
 
     protected function getInputSort(): string

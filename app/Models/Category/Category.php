@@ -7,6 +7,7 @@ namespace App\Models\Category;
 use App\Enums\Languages;
 use App\Models\Model;
 use App\Models\Product\Product;
+use App\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,8 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property boolean show
  *
  * @property Collection translations
+ * @property Collection children
  *
- * @method filterByKeyword(array $filters): Builder
  */
 class Category extends Model
 {
@@ -79,16 +80,5 @@ class Category extends Model
     public function allProducts(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'product_to_categories', 'parent_category_id');
-    }
-
-    public function scopeFilterByKeyword(Builder $builder, array $filters): Builder
-    {
-        return $builder->when(! empty($filters['keyword']), static function (Builder $query) use ($filters) {
-            $keyword = $filters['keyword'];
-            $query->where('name', 'like', '%' . $keyword . '%');
-            $query->orWhereHas('children', static function (Builder $query) use ($keyword) {
-                $query->where('name', 'like', '%' . $keyword . '%');
-            });
-        });
     }
 }

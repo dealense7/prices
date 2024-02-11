@@ -34,7 +34,7 @@ class GlovoParser extends Parser
             $code = data_get($item, 'externalId', []);
         }
 
-        return $code;
+        return (int) $code;
     }
 
     public function getName(array $item): string
