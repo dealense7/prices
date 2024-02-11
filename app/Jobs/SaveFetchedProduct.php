@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\DataTransferObjects\ProductDto;
@@ -20,10 +22,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class SaveFetchedProduct implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         private readonly array $items,
@@ -41,14 +47,14 @@ class SaveFetchedProduct implements ShouldQueue
         $items = collect($this->items)->whereNotIn('code', $products->pluck('code')->toArray());
 
         // How many we had to save for this time.
-        dump(count($this->items).' -> '.$items->count());
+        dump(count($this->items) . ' -> ' . $items->count());
 
         DB::transaction(function () use ($items) {
-            /** @var ProductDto $item */
+            /** @var \App\DataTransferObjects\ProductDto $item */
             foreach ($items as $item) {
                 $productId = $this->createProduct($item);
 
-                if (!empty($item->imageUrl)) {
+                if (! empty($item->imageUrl)) {
                     $this->downloadImage($productId, $item->code, $item->imageUrl);
                 }
             }
@@ -90,12 +96,11 @@ class SaveFetchedProduct implements ShouldQueue
     private function createTag(
         int $productId,
         ?string $tag,
-        ?string $tagName
+        ?string $tagName,
     ): void {
         $tagId = TagType::Quantity;
 
-        if (!empty($tag) && !empty($tagName)) {
-
+        if (! empty($tag) && ! empty($tagName)) {
             if ($tagName === 'გ') {
                 $tagName = 'გრ';
             } elseif (in_array($tagName, ['ლ', 'კგ'], true) && floatval($tag) < 1) {
@@ -103,8 +108,8 @@ class SaveFetchedProduct implements ShouldQueue
                 $tagName = $tagName === 'ლ' ? 'მლ' : 'გრ';
             }
 
-            /** @var TagTranslation|null $tagTranslation */
-            $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag.' '.$tagName)->first();
+            /** @var \App\Models\Tag\TagTranslation|null $tagTranslation */
+            $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag . ' ' . $tagName)->first();
             $tagId          = $tagTranslation?->tag_id;
 
             if ($tagId === null) {
@@ -124,14 +129,14 @@ class SaveFetchedProduct implements ShouldQueue
 
                 $tagId = DB::table((new Tag())->getTable())->insertGetId([
                     'type'      => $type->value,
-                    'parent_id' => $type->value
+                    'parent_id' => $type->value,
                 ]);
 
                 DB::table((new TagTranslation())->getTable())
                     ->insert([
                         'tag_id'      => $tagId,
                         'language_id' => Languages::Georgian->value,
-                        'name'        => $tag.' '.$tagName,
+                        'name'        => $tag . ' ' . $tagName,
                     ]);
             }
         }
@@ -139,7 +144,7 @@ class SaveFetchedProduct implements ShouldQueue
         DB::table((new Product())->tags()->getTable())
             ->insert([
                 'product_id' => $productId,
-                'tag_id'     => $tagId
+                'tag_id'     => $tagId,
             ]);
     }
 
@@ -157,7 +162,7 @@ class SaveFetchedProduct implements ShouldQueue
             if ($companyId) {
                 DB::table((new Product())->getTable())->where('id', $productId)
                     ->update([
-                        'company_id' => $companyId
+                        'company_id' => $companyId,
                     ]);
             }
         }
@@ -169,14 +174,14 @@ class SaveFetchedProduct implements ShouldQueue
             ->insert([
                 'product_id'         => $productId,
                 'category_id'        => $this->categoryId,
-                'parent_category_id' => $this->parentCategoryId
+                'parent_category_id' => $this->parentCategoryId,
             ]);
     }
 
     private function downloadImage(
         int $productId,
         int $code,
-        string $url
+        string $url,
     ): void {
         if (empty($url)) {
             return;
@@ -196,20 +201,19 @@ class SaveFetchedProduct implements ShouldQueue
         }
 
         if ($extension !== null) {
-
             try {
                 $imageContent = file_get_contents($url);
 
                 if ($imageContent) {
-                    $filename = $code.'.'.$extension;
+                    $filename = $code . '.' . $extension;
 
-                    Storage::disk('public')->put('products'.'/'.$filename, $imageContent);
+                    Storage::disk('public')->put('products' . '/' . $filename, $imageContent);
 
-                    $diskUrl = Storage::disk('public')->path('products'.'/'.$filename);
+                    $diskUrl = Storage::disk('public')->path('products' . '/' . $filename);
 
                     $data = [
                         'name'          => $filename,
-                        'path'          => 'products'.'/'.$filename,
+                        'path'          => 'products' . '/' . $filename,
                         'size'          => filesize($diskUrl),
                         'extension'     => $extension,
                         'fileable_id'   => $productId,
@@ -218,8 +222,7 @@ class SaveFetchedProduct implements ShouldQueue
 
                     DB::table((new File())->getTable())->insert($data);
                 }
-            } catch (\Exception $e) {
-
+            } catch (Throwable $e) {
             }
         }
     }

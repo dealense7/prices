@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Dashboard\List;
 
 use App\Enums\TagType;
@@ -18,7 +20,7 @@ class ItemTag extends Component
 
     public function mount(
         Collection $tags,
-        Product $product
+        Product $product,
     ): void {
         $this->tags    = $tags;
         $this->product = $product;
@@ -36,16 +38,14 @@ class ItemTag extends Component
         foreach ($items as $item) {
             if (is_int($item['id'])) {
                 $categoryIds[] = $item['id'];
-
             } else {
                 $parentCategoryId = DB::table('tags')->select('id')->where('name', TagType::Other->text())->first()->id;
                 $categoryIds[]    = DB::table('tags')->insertGetId([
                     'name'      => $item['name'],
-                    'parent_id' => $parentCategoryId
+                    'parent_id' => $parentCategoryId,
                 ]);
             }
         }
         $this->product->tags()->sync($categoryIds);
-
     }
 }

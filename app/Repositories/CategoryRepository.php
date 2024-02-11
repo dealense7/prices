@@ -17,7 +17,7 @@ class CategoryRepository implements CategoryRepositoryContract
         $items = $model->filterByKeyword($filters)
             ->with([
                 'translation',
-                'children.translation'
+                'children.translation',
             ])
             ->whereNull('parent_id');
 
@@ -31,10 +31,10 @@ class CategoryRepository implements CategoryRepositoryContract
 
     public function findById(int $id): ?Category
     {
-        /** @var Category|null $item */
+        /** @var \App\Models\Category\Category|null $item */
         $item = $this->getModel()->query()
             ->with([
-                'translation'
+                'translation',
             ])
             ->where('id', $id)->first();
 

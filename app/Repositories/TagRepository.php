@@ -16,7 +16,7 @@ class TagRepository implements TagRepositoryContract
         $items = $model->filterByKeyword($filters)
             ->with([
                 'children.translation',
-                'translation'
+                'translation',
             ])
             ->whereNull('parent_id');
 
@@ -30,7 +30,7 @@ class TagRepository implements TagRepositoryContract
 
     public function findById(int $id): ?Tag
     {
-        /** @var Tag|null $item */
+        /** @var \App\Models\Tag\Tag|null $item */
         $item = $this->getModel()->query()->where('id', $id)->first();
 
         return $item;

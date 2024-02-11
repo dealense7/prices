@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Contracts\Repositories\CompanyRepositoryContract;
@@ -15,7 +17,7 @@ class ProductService
 {
     public function __construct(
         private readonly ProductRepositoryContract $repository,
-        private readonly CompanyRepositoryContract $companyRepository
+        private readonly CompanyRepositoryContract $companyRepository,
     ) {
     }
 
@@ -23,7 +25,7 @@ class ProductService
         array $filters = [],
         int $page = 1,
         ?int $perPage = null,
-        ?string $sort = null
+        ?string $sort = null,
     ): LengthAwarePaginator {
         return $this->repository->findItems($filters, $page, $perPage, $sort);
     }
@@ -47,7 +49,7 @@ class ProductService
     {
         $item = $this->findById($id);
 
-        if (!$item) {
+        if (! $item) {
             throw new ItemNotFoundException();
         }
 
@@ -57,19 +59,19 @@ class ProductService
     public function getPrice(Product $product): array
     {
         Carbon::setLocale('ka');
+
         return $product
             ->prices
-            ->transform(function ($item) {
+            ->transform(static function ($item) {
                 return [
                     'price'       => number_format($item->price / 100, 2),
-                    'companyLogo' => 'storage/'.$item->store->logo->path,
+                    'companyLogo' => 'storage/' . $item->store->logo->path,
                     'companyName' => $item->store->name,
                     'companyYear' => $item->store->year,
-                    'createdAt'   => $item->created_at->diffForHumans()
+                    'createdAt'   => $item->created_at->diffForHumans(),
                 ];
             })
             ->toArray();
-
     }
 
     public function getProductsList(array $ids): Collection
@@ -80,20 +82,20 @@ class ProductService
     public function update(Product $item, array $data): Product
     {
         if (
-            !empty($data['show'])
+            ! empty($data['show'])
         ) {
             $this->repository->update($item, [
-                'show' => data_get($data, 'show', $item->getShow())
+                'show' => data_get($data, 'show', $item->getShow()),
             ]);
         }
         if (
-            !empty($data['name'])
+            ! empty($data['name'])
         ) {
             $this->repository->createOrUpdateTranslation(
                 $item,
                 [
                     'name'        => data_get($data, 'name', $item->translation->getName()),
-                    'language_id' => Languages::Georgian->value
+                    'language_id' => Languages::Georgian->value,
                 ]
             );
         }
@@ -106,14 +108,14 @@ class ProductService
             $this->repository->syncTags($item, $data['tags']);
         }
 
-        if (!empty($data['company'])) {
+        if (! empty($data['company'])) {
             if (intval($data['company']['id']) !== 0) {
                 $company = $this->companyRepository->findById((int) $data['company']['id']);
             } else {
                 $company = $this->companyRepository->create(['name' => $data['company']['name']]);
             }
             $this->repository->update($item, [
-                'company_id' => $company->getId()
+                'company_id' => $company->getId(),
             ]);
         }
 

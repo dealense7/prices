@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Category;
 
 use App\Enums\Languages;
 use App\Models\Model;
 use App\Models\Product\Product;
-use App\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -28,7 +28,7 @@ class Category extends Model
         'slug',
         'show',
         'parent_id',
-        'foreignId'
+        'foreignId',
     ];
 
     public function getId(): int
@@ -83,11 +83,11 @@ class Category extends Model
 
     public function scopeFilterByKeyword(Builder $builder, array $filters): Builder
     {
-        return $builder->when(!empty($filters['keyword']), static function (Builder $query) use ($filters) {
+        return $builder->when(! empty($filters['keyword']), static function (Builder $query) use ($filters) {
             $keyword = $filters['keyword'];
-            $query->where('name', 'like', '%'.$keyword.'%');
+            $query->where('name', 'like', '%' . $keyword . '%');
             $query->orWhereHas('children', static function (Builder $query) use ($keyword) {
-                $query->where('name', 'like', '%'.$keyword.'%');
+                $query->where('name', 'like', '%' . $keyword . '%');
             });
         });
     }

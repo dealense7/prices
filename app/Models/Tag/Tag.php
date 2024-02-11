@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Tag;
+declare(strict_types=1);
 
+namespace App\Models\Tag;
 
 use App\Enums\Languages;
 use App\Models\Model;
@@ -22,7 +23,7 @@ class Tag extends Model
     protected $fillable = [
         'show',
         'type',
-        'parent_id'
+        'parent_id',
     ];
 
     public function getId(): int
@@ -39,7 +40,6 @@ class Tag extends Model
     {
         return $this->type;
     }
-
 
     public function getShow(): bool
     {
@@ -68,11 +68,11 @@ class Tag extends Model
 
     public function scopeFilterByKeyword(Builder $builder, array $filters): Builder
     {
-        return $builder->when(!empty($filters['keyword']), static function (Builder $query) use ($filters) {
+        return $builder->when(! empty($filters['keyword']), static function (Builder $query) use ($filters) {
             $keyword = $filters['keyword'];
-            $query->where('name', 'like', '%'.$keyword.'%');
+            $query->where('name', 'like', '%' . $keyword . '%');
             $query->orWhereHas('children', static function (Builder $query) use ($keyword) {
-                $query->where('name', 'like', '%'.$keyword.'%');
+                $query->where('name', 'like', '%' . $keyword . '%');
             });
         });
     }

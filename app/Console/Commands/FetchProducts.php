@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
-use App\DataTransferObjects\ProductDto;
 use App\Jobs\SaveFetchedProduct;
 use App\Models\Category\Category;
 use App\Models\Language;
-use App\Models\Store;
-use App\Models\Url;
 use App\Parsers\OriNabijiParser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -25,16 +24,17 @@ class FetchProducts extends Command
         $categories = Category::query()->with('children')->whereNull('parent_id')->get();
         foreach ($categories as $category) {
             $data = Http::withoutVerifying()
-                ->post('https://catalog-api.orinabiji.ge/catalog/api/products/search?lang=ge&sortField=isInStock&sortDirection=-1',
+                ->post(
+                    'https://catalog-api.orinabiji.ge/catalog/api/products/search?lang=ge&sortField=isInStock&sortDirection=-1',
                     [
                         'categoryIds' => $category->children->pluck('foreignId')->toArray(),
                         'limit'       => 10000,
-                        'skip'        => 0
+                        'skip'        => 0,
                     ]
                 )->json();
 
-            DB::transaction(function () use ($data, $category, $languages) {
-                SaveFetchedProduct::dispatch((new OriNabijiParser)->getItems($data), $category->children, $languages);
+            DB::transaction(static function () use ($data, $category, $languages) {
+                SaveFetchedProduct::dispatch((new OriNabijiParser())->getItems($data), $category->children, $languages);
             });
         }
     }

@@ -12,34 +12,37 @@ use App\Models\Product\ProductPrice;
 use App\Models\Product\ProductTranslation;
 use App\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Validation\ValidationException;
 
 class ProductRepository implements ProductRepositoryContract
 {
     /**
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function findItems(
         array $filters = [],
         int $page = 1,
         ?int $perPage = null,
-        ?string $sort = null
+        ?string $sort = null,
     ): LengthAwarePaginator {
         $model             = $this->getModel();
         $productPriceModel = $this->getProductPriceModel();
         $productPriceTable = $this->getProductPriceModel()->getTable();
 
         $products = $productPriceModel->query()
-            ->selectRaw($productPriceTable.'.product_id, COUNT(DISTINCT '.$productPriceTable.'.store_id) AS count')
-            ->join((new File())->getTable(), $productPriceTable.'.product_id', '=', 'files.fileable_id')
-            ->join((new Product())->getTable(), $productPriceTable.'.product_id', '=', 'products.id')
-            ->join((new ProductTranslation())->getTable(), $productPriceTable.'.product_id', '=',
-                (new ProductTranslation())->getTable().'.id')
-            ->where((new ProductTranslation())->getTable().'.name', 'LIKE', '%რძე%')
+            ->selectRaw($productPriceTable . '.product_id, COUNT(DISTINCT ' . $productPriceTable . '.store_id) AS count')
+            ->join((new File())->getTable(), $productPriceTable . '.product_id', '=', 'files.fileable_id')
+            ->join((new Product())->getTable(), $productPriceTable . '.product_id', '=', 'products.id')
+            ->join(
+                (new ProductTranslation())->getTable(),
+                $productPriceTable . '.product_id',
+                '=',
+                (new ProductTranslation())->getTable() . '.id'
+            )
+            ->where((new ProductTranslation())->getTable() . '.name', 'LIKE', '%რძე%')
             ->where('products.show', false)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)
-            ->groupBy($productPriceTable.'.product_id')
+            ->groupBy($productPriceTable . '.product_id')
             ->having('count', '>', 1)
             ->paginate($model->getValidPerPage($perPage), ['*'], 'page', $page);
 
@@ -51,7 +54,7 @@ class ProductRepository implements ProductRepositoryContract
                 'categories.translation',
                 'tags.translation',
                 'images',
-                'translation'
+                'translation',
             ])
             ->whereIn('id', $productIds);
 
@@ -69,7 +72,6 @@ class ProductRepository implements ProductRepositoryContract
         );
     }
 
-
     public function getProductsGroupedByCategory(): Collection
     {
 
@@ -81,22 +83,22 @@ class ProductRepository implements ProductRepositoryContract
             ->withCount([
                 'allProducts' => static function ($query) {
                     $query->where('show', true);
-                }
+                },
             ])
             ->with('translation')
 //            ->inRandomOrder()
             ->limit(4)
             ->has('allProducts', '>=', 14)
             ->get()
-            ->each(function ($item) {
+            ->each(static function ($item) {
                 $item->load([
                     'allProducts' => static function ($query) {
                         $query
                             ->select('id')
                             ->where('show', true)
-                            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND created_at > "'.now()->subDay()->toDateString().'") DESC')
+                            ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND created_at > "' . now()->subDay()->toDateString() . '") DESC')
                             ->take(14);
-                    }
+                    },
                 ]);
             });
 
@@ -113,11 +115,11 @@ class ProductRepository implements ProductRepositoryContract
             ->whereIn('id', $items->pluck('allProducts.*.id')->flatten()->toArray())
             ->get();
 
-        /** @var Category $item */
+        /** @var \App\Models\Category\Category $item */
         foreach ($items as $item) {
             $categoryId = $item->id;
 
-            $item->setRelation('allProducts', $products->filter(function ($product) use ($categoryId) {
+            $item->setRelation('allProducts', $products->filter(static function ($product) use ($categoryId) {
                 return $product->categories->pluck('parent_id')->contains($categoryId);
             }));
         }
@@ -128,6 +130,7 @@ class ProductRepository implements ProductRepositoryContract
     public function getProducts(array $filters = []): LengthAwarePaginator
     {
         $model    = $this->getModel();
+
         return $model->query()
             ->with([
                 'categories.translation',
@@ -135,7 +138,7 @@ class ProductRepository implements ProductRepositoryContract
                 'company',
                 'prices',
                 'images',
-                'translation'
+                'translation',
             ])
             ->where('show', true)
             ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND active = 1) DESC')
@@ -148,6 +151,7 @@ class ProductRepository implements ProductRepositoryContract
     public function getProductsList(array $filters = []): Collection
     {
         $model    = $this->getModel();
+
         return $model->query()
             ->with([
                 'categories.translation',
@@ -155,7 +159,7 @@ class ProductRepository implements ProductRepositoryContract
                 'company',
                 'prices.store.logo',
                 'images',
-                'translation'
+                'translation',
             ])
             ->where('show', true)
             ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND active = 1) DESC')
@@ -168,12 +172,12 @@ class ProductRepository implements ProductRepositoryContract
 
     public function findById(int $id): ?Product
     {
-        /** @var Product|null $item */
+        /** @var \App\Models\Product\Product|null $item */
         $item = $this->getModel()
             ->query()
             ->with([
                 'prices.store.logo',
-                'translation'
+                'translation',
             ])
             ->where('id', $id)->first();
 
@@ -188,7 +192,7 @@ class ProductRepository implements ProductRepositoryContract
         $item->load([
             'categories',
             'tags',
-            'images'
+            'images',
         ]);
 
         return $item;
@@ -199,18 +203,18 @@ class ProductRepository implements ProductRepositoryContract
         ProductTranslation::query()->updateOrCreate(
             [
                 'product_id'  => $item->getId(),
-                'language_id' => $data['language_id']
+                'language_id' => $data['language_id'],
             ],
             [
                 'name'        => $data['name'],
-                'language_id' => $data['language_id']
+                'language_id' => $data['language_id'],
             ]
         );
 
         $item->load([
             'categories',
             'tags',
-            'images'
+            'images',
         ]);
 
         return $item;
@@ -223,7 +227,7 @@ class ProductRepository implements ProductRepositoryContract
         $item->load([
             'categories',
             'tags',
-            'images'
+            'images',
         ]);
 
         return $item;
@@ -236,7 +240,7 @@ class ProductRepository implements ProductRepositoryContract
         $item->load([
             'categories',
             'tags',
-            'images'
+            'images',
         ]);
 
         return $item;

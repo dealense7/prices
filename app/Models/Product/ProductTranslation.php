@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Product;
+declare(strict_types=1);
 
+namespace App\Models\Product;
 
 use App\Models\Model;
 
@@ -18,7 +19,7 @@ class ProductTranslation extends Model
     protected $fillable = [
         'name',
         'product_id',
-        'language_id'
+        'language_id',
     ];
 
     public function getId(): int

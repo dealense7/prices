@@ -1,19 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\DataTransferObjects\ProductDto;
-use App\Enums\Languages;
-use App\Enums\TagType;
-use App\Models\Category\Category;
-use App\Models\Company;
-use App\Models\File;
 use App\Models\Product\Product;
 use App\Models\Product\ProductPrice;
-use App\Models\Product\ProductTranslation;
-use App\Models\Tag\Tag;
-use App\Models\Tag\TagTranslation;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,19 +15,20 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class SaveFetchedPrices implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         private readonly array $items,
         private readonly int $storeId,
-        private readonly int $providerId
+        private readonly int $providerId,
     ) {
     }
-
 
     public function handle(): void
     {
@@ -47,7 +41,7 @@ class SaveFetchedPrices implements ShouldQueue
         DB::transaction(function () use ($items, $products) {
             $priceTable = (new ProductPrice())->getTable();
 
-            /** @var ProductDto $item */
+            /** @var \App\DataTransferObjects\ProductDto $item */
             foreach ($items as $item) {
                 $this->createPrice($item, $products->firstWhere('code', $item->code)->id, $priceTable);
             }
@@ -112,7 +106,7 @@ class SaveFetchedPrices implements ShouldQueue
                 'store_id'    => $this->storeId,
                 'provider_id' => $this->providerId,
                 'created_at'  => now(),
-                'active'      => true
+                'active'      => true,
             ]);
         }
     }

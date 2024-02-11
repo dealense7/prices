@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Category;
 
 use App\Models\Model;
@@ -17,7 +19,7 @@ class CategoryTranslation extends Model
     protected $fillable = [
         'name',
         'category_id',
-        'language_id'
+        'language_id',
     ];
 
     public function getId(): int

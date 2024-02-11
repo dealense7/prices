@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Product;
+declare(strict_types=1);
 
+namespace App\Models\Product;
 
 use App\Models\Model;
 use App\Models\Store;

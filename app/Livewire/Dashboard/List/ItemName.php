@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Dashboard\List;
 
 use App\Models\Product\Product;
@@ -11,7 +13,7 @@ class ItemName extends Component
     public Product $product;
 
     public function mount(
-        Product $product
+        Product $product,
     ): void {
         $this->product = $product;
     }

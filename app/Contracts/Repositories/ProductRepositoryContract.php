@@ -14,7 +14,7 @@ interface ProductRepositoryContract
         array $filters = [],
         int $page = 1,
         ?int $perPage = null,
-        ?string $sort = null
+        ?string $sort = null,
     ): LengthAwarePaginator;
 
     public function getProductsGroupedByCategory(): Collection;

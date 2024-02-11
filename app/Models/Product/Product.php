@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Product;
+declare(strict_types=1);
 
+namespace App\Models\Product;
 
 use App\Enums\Languages;
 use App\Enums\TagType;
@@ -16,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Collection;
 
 /**
  * @property int id
@@ -36,7 +36,7 @@ class Product extends Model
     protected $fillable = [
         'code',
         'show',
-        'company_id'
+        'company_id',
     ];
 
     public function getId(): int
@@ -67,6 +67,7 @@ class Product extends Model
     public function getQuantityAttribute(): string
     {
         $tag = $this->tags->first();
+
         return match ($tag->type) {
             TagType::Size->value => $this->calculateSize($tag),
             TagType::Weight->value => $this->calculateWeight($tag),
@@ -78,33 +79,12 @@ class Product extends Model
     {
 //        dump($this->id);
         $tag = $this->tags->first();
+
         return match ($tag->type) {
             TagType::Size->value => 'მლ',
             TagType::Weight->value => 'გრ',
             TagType::Quantity->value => 'ერთ'
         };
-    }
-
-    private function calculateSize($tag): string
-    {
-        $size = floatval($tag->name);
-
-        if (str_contains($tag->name, ' ლ')) {
-            $size *= 1000;
-        }
-
-        return $size;
-    }
-
-    private function calculateWeight($tag): string
-    {
-        $size = floatval($tag->name);
-
-        if (str_contains($tag->name, 'კგ')) {
-            $size *= 1000;
-        }
-
-        return $size;
     }
 
     public function prices(): HasMany
@@ -149,15 +129,15 @@ class Product extends Model
 
     public function scopeFilterByKeyword(Builder $builder, array $filters): Builder
     {
-        return $builder->when(!empty($filters['keyword']), static function (Builder $query) use ($filters) {
+        return $builder->when(! empty($filters['keyword']), static function (Builder $query) use ($filters) {
             $keyword = $filters['keyword'];
             $query->whereHas('translation', static function (Builder $query) use ($keyword) {
-                $query->where('name', 'like', '%'.$keyword.'%');
+                $query->where('name', 'like', '%' . $keyword . '%');
             })->orWhereHas('company', static function (Builder $query) use ($keyword) {
-                $query->where('name', 'like', '%'.$keyword.'%');
+                $query->where('name', 'like', '%' . $keyword . '%');
             })->orWhereHas('categories', static function (Builder $query) use ($keyword) {
                 $query->whereHas('translation', static function (Builder $query) use ($keyword) {
-                    $query->where('name', 'like', '%'.$keyword.'%');
+                    $query->where('name', 'like', '%' . $keyword . '%');
                 });
             });
         });
@@ -165,7 +145,7 @@ class Product extends Model
 
     public function scopeFilterByCategories(Builder $builder, array $filters): Builder
     {
-        return $builder->when(!empty($filters['categoryIds']), static function (Builder $query) use ($filters) {
+        return $builder->when(! empty($filters['categoryIds']), static function (Builder $query) use ($filters) {
             $categoryIds = $filters['categoryIds'];
             $query->whereHas('categories', static function (Builder $query) use ($categoryIds) {
                 $query->whereIn('id', $categoryIds);
@@ -175,7 +155,7 @@ class Product extends Model
 
     public function scopeFilterByParentCategories(Builder $builder, array $filters): Builder
     {
-        return $builder->when(!empty($filters['parentCategoryIds']), static function (Builder $query) use ($filters) {
+        return $builder->when(! empty($filters['parentCategoryIds']), static function (Builder $query) use ($filters) {
             $categoryIds = $filters['parentCategoryIds'];
             $query->whereHas('parentCategories', static function (Builder $query) use ($categoryIds) {
                 $query->whereIn('id', $categoryIds);
@@ -185,11 +165,31 @@ class Product extends Model
 
     public function scopeFilterByIds(Builder $builder, array $filters): Builder
     {
-        return $builder->when(!empty($filters['ids']), static function (Builder $query) use ($filters) {
+        return $builder->when(! empty($filters['ids']), static function (Builder $query) use ($filters) {
             $ids = $filters['ids'];
             $query->whereIn('id', $ids);
         });
     }
+
+    private function calculateSize($tag): string
+    {
+        $size = floatval($tag->name);
+
+        if (str_contains($tag->name, ' ლ')) {
+            $size *= 1000;
+        }
+
+        return $size;
+    }
+
+    private function calculateWeight($tag): string
+    {
+        $size = floatval($tag->name);
+
+        if (str_contains($tag->name, 'კგ')) {
+            $size *= 1000;
+        }
+
+        return $size;
+    }
 }
-
-

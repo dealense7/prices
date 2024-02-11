@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -12,7 +14,7 @@ class ProductController extends Controller
     public function update(
         int $id,
         ProductSaveRequest $request,
-        ProductService $service
+        ProductService $service,
     ) {
         $data = $request->validated();
 
@@ -25,7 +27,7 @@ class ProductController extends Controller
 
     public function delete(
         int $id,
-        ProductService $service
+        ProductService $service,
     ) {
         $item = $service->findOrFailById($id);
 
@@ -36,7 +38,7 @@ class ProductController extends Controller
 
     public function getPrice(
         int $id,
-        ProductService $service
+        ProductService $service,
     ) {
         $item = $service->findOrFailById($id);
 
@@ -45,14 +47,13 @@ class ProductController extends Controller
 
     public function getProducts(
         Request $request,
-        ProductService $service
+        ProductService $service,
     ) {
         $ids = [];
         $requestIds = $request->get('ids', []);
-        foreach ($requestIds as $requestId)
-        {
+        foreach ($requestIds as $requestId) {
             $id = intval($requestId);
-            if ($id){
+            if ($id) {
                 $ids[] = $id;
             }
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Parsers;
 
 use Illuminate\Support\Arr;
@@ -37,7 +39,6 @@ class GlovoParser extends Parser
 
     public function getName(array $item): string
     {
-
         return explode('/', $item['name'])[0];
     }
 
@@ -47,6 +48,7 @@ class GlovoParser extends Parser
         if ($promotion !== null) {
             return intval(round($promotion['price'], 3) * 100);
         }
+
         return intval(round($item['priceInfo']['amount'], 3) * 100);
     }
 

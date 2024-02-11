@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use App\Models\Model;
 use Illuminate\Validation\ValidationException;
 
 /**
- * @mixin Model
+ * @mixin \App\Models\Model
  */
 trait Paginatable
 {
@@ -18,7 +17,7 @@ trait Paginatable
     }
 
     /**
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function getValidPerPage(?int $perPage = null): int
     {

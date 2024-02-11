@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Dashboard\List;
 
 use App\Models\Product\Product;
@@ -17,7 +19,7 @@ class ItemCategory extends Component
 
     public function mount(
         Collection $categories,
-        Product $product
+        Product $product,
     ): void {
         $this->categories = $categories;
         $this->product    = $product;
@@ -29,7 +31,6 @@ class ItemCategory extends Component
         return view('livewire.dashboard.list.item-category');
     }
 
-
     public function update(array $items): void
     {
 
@@ -37,16 +38,14 @@ class ItemCategory extends Component
         foreach ($items as $item) {
             if (is_int($item['id'])) {
                 $categoryIds[] = $item['id'];
-
             } else {
                 $parentCategoryId = DB::table('categories')->select('id')->where('name', 'სხვა')->first()->id;
                 $categoryIds[]    = DB::table('categories')->insertGetId([
                     'name'      => $item['name'],
-                    'parent_id' => $parentCategoryId
+                    'parent_id' => $parentCategoryId,
                 ]);
             }
         }
         $this->product->categories()->sync($categoryIds);
-
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum TagType: int
@@ -7,7 +9,6 @@ enum TagType: int
     case Size     = 1;
     case Quantity = 2;
     case Weight   = 3;
-
 
     public function text(): array
     {

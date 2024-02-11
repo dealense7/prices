@@ -9,7 +9,6 @@ use Illuminate\Contracts\Support\Responsable;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-use function __;
 use function response;
 
 class ItemNotFoundException extends Exception implements Responsable

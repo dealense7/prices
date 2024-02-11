@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Jobs\ParseStoreProducts;
@@ -18,7 +20,7 @@ class FetchData extends Command
         $stores = $this->getStores();
 
         // Start fetching data from the stores
-        /** @var Store $store */
+        /** @var \App\Models\Store $store */
         foreach ($stores as $store) {
             dispatch(new ParseStoreProducts($store));
         }
@@ -28,7 +30,7 @@ class FetchData extends Command
     {
         return Store::query()
             ->with([
-                'urls.provider'
+                'urls.provider',
             ])->get();
     }
 }

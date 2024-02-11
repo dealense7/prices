@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +18,7 @@ class Company extends Model
     protected $fillable = [
         'name',
         'show',
-        'parent_id'
+        'parent_id',
     ];
 
     public function getId(): int
@@ -36,9 +38,9 @@ class Company extends Model
 
     public function scopeFilterByKeyword(Builder $builder, array $filters): Builder
     {
-        return $builder->when(!empty($filters['keyword']), static function (Builder $query) use ($filters) {
+        return $builder->when(! empty($filters['keyword']), static function (Builder $query) use ($filters) {
             $keyword = $filters['keyword'];
-            $query->where('name', 'like', '%'.$keyword.'%');
+            $query->where('name', 'like', '%' . $keyword . '%');
         });
     }
 }

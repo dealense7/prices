@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Enums\Languages;
@@ -19,30 +21,30 @@ class CreateCategories extends Command
     public function handle(): void
     {
         $languages = Language::query()->get();
-        /** @var Language $language */
+        /** @var \App\Models\Language $language */
 
         foreach ($languages as $language) {
             $slug = $language->getId() === Languages::Georgian->value ? 'ge' : 'en';
             $data = Http::withoutVerifying()
-                ->get('https://2nabiji.ge/_next/data/13Jh8-z8SgieOuXt1qaRv/'.$slug.'/category/thambaqos-natsarmi-102.json?lang=ge&category-slug=thambaqos-natsarmi-102')
+                ->get('https://2nabiji.ge/_next/data/13Jh8-z8SgieOuXt1qaRv/' . $slug . '/category/thambaqos-natsarmi-102.json?lang=ge&category-slug=thambaqos-natsarmi-102')
                 ->json();
 
             // Create parents
             foreach (collect($data['pageProps']['categories'])->whereNull('parent') as $parentCategory) {
-                /** @var Category $category */
+                /** @var \App\Models\Category\Category $category */
                 $category = Category::query()->firstOrCreate(
                     [
                         'foreignId' => $parentCategory['_id'],
                     ],
                     [
                         'foreignId' => $parentCategory['_id'],
-                        'slug'      => $parentCategory['nameSlug']
+                        'slug'      => $parentCategory['nameSlug'],
                     ]
                 );
 
                 $category->translations()->create([
                     'language_id' => $language->getId(),
-                    'name'        => $parentCategory['name']
+                    'name'        => $parentCategory['name'],
                 ]);
             }
 
@@ -58,13 +60,13 @@ class CreateCategories extends Command
                         [
                             'foreignId' => $childCategory['_id'],
                             'slug'      => $childCategory['nameSlug'],
-                            'parent_id' => $parentCategoryId->getId()
+                            'parent_id' => $parentCategoryId->getId(),
                         ]
                     );
 
                     $category->translations()->create([
                         'language_id' => $language->getId(),
-                        'name'        => $childCategory['name']
+                        'name'        => $childCategory['name'],
                     ]);
                 }
             }
@@ -74,10 +76,9 @@ class CreateCategories extends Command
     private function getStores(): Collection
     {
         return Store::query()->with([
-            'urls.provider'
+            'urls.provider',
         ])->get();
     }
-
 
     private function getKeywords(): array
     {

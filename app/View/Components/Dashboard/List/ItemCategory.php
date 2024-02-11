@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\View\Components\Dashboard\List;
 
 use App\Models\Product\Product;
@@ -12,13 +14,12 @@ class ItemCategory extends Component
 {
     public function __construct(
         public Collection $categories,
-        public Product $product
-    )
-    {
+        public Product $product,
+    ) {
         //
     }
 
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
         return view('components.dashboard.list.item-category');
     }

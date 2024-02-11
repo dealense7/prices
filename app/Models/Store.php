@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Collection;
 
 /**
  * @property int id
@@ -16,7 +17,7 @@ class Store extends Model
 {
     protected $fillable = [
         'name',
-        'year'
+        'year',
     ];
 
     public function getId(): int

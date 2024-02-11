@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Services\CategoryService;
 use App\Services\ProductService;
-use App\Services\StoreService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -13,9 +14,8 @@ class HomeController extends Controller
     public function index(
         CategoryService $categoryService,
         ProductService $productService,
-//        StoreService $storeService,
-    ): View
-    {
+        //        StoreService $storeService,
+    ): View {
         $categories = $categoryService->findItems();
         $products   = $productService->getProductsGroupedByCategory();
 

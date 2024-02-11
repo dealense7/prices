@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth\Passwords;
 
-use App\Providers\RouteServiceProvider;
-use Livewire\Component;
-use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
+use Livewire\Component;
 
 class Reset extends Component
 {
@@ -42,7 +43,7 @@ class Reset extends Component
             [
                 'token' => $this->token,
                 'email' => $this->email,
-                'password' => $this->password
+                'password' => $this->password,
             ],
             function ($user, $password) {
                 $user->password = Hash::make($password);
@@ -57,7 +58,7 @@ class Reset extends Component
             }
         );
 
-        if ($response == Password::PASSWORD_RESET) {
+        if ($response === Password::PASSWORD_RESET) {
             session()->flash(trans($response));
 
             return redirect(route('home'));
@@ -76,6 +77,11 @@ class Reset extends Component
         return Password::broker();
     }
 
+    public function render()
+    {
+        return view('livewire.auth.passwords.reset')->extends('layouts.auth');
+    }
+
     /**
      * Get the guard to be used during password reset.
      *
@@ -84,10 +90,5 @@ class Reset extends Component
     protected function guard()
     {
         return Auth::guard();
-    }
-
-    public function render()
-    {
-        return view('livewire.auth.passwords.reset')->extends('layouts.auth');
     }
 }

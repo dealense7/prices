@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Contracts\Repositories\CompanyRepositoryContract;
@@ -8,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 class CompanyService
 {
     public function __construct(
-        private readonly CompanyRepositoryContract $repository
+        private readonly CompanyRepositoryContract $repository,
     ) {
         //
     }

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use App\Models\Model;
 use function explode;
 use function in_array;
-use function substr;
 use function trim;
 
 /**
- * @mixin Model
+ * @mixin \App\Models\Model
  */
 trait Sortable
 {

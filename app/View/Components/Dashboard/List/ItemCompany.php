@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\View\Components\Dashboard\List;
 
 use App\Models\Product\Product;
@@ -11,7 +13,7 @@ class ItemCompany extends Component
 {
     public function __construct(
         public Collection $companies,
-        public Product $product
+        public Product $product,
     ) {
         //
     }

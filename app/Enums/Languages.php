@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum Languages: int
@@ -13,12 +15,12 @@ enum Languages: int
             Languages::Georgian => [
                 'name'       => 'ქართული',
                 'slug'       => 'ka',
-                'is_default' => true
+                'is_default' => true,
             ],
             Languages::English => [
                 'name'       => 'English',
                 'slug'       => 'en',
-                'is_default' => false
+                'is_default' => false,
             ],
         };
     }

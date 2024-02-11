@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Enums\Languages;
 use App\Models\Category\Category;
 use App\Models\Category\CategoryTranslation;
 use App\Models\Store;
-use App\Models\Url;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,7 +16,10 @@ use Illuminate\Queue\SerializesModels;
 
 class ParseStoreProducts implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(public Store $store)
     {
@@ -34,7 +38,7 @@ class ParseStoreProducts implements ShouldQueue
         $totalItems = 0;
 
 
-        /** @var Url $url */
+        /** @var \App\Models\Url $url */
         foreach ($this->store->urls as $url) {
             $parser = $url->resolveProvider();
 
@@ -56,7 +60,7 @@ class ParseStoreProducts implements ShouldQueue
         }
 
         // Total fetched items from a store
-        dump($this->store->name.' items:'.$totalItems);
+        dump($this->store->name . ' items:' . $totalItems);
     }
 
     private function getKeywords(): array
@@ -92,5 +96,4 @@ class ParseStoreProducts implements ShouldQueue
 
         return $categories;
     }
-
 }

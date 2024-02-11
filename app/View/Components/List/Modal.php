@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\View\Components\List;
 
 use Closure;
@@ -13,8 +15,7 @@ class Modal extends Component
         //
     }
 
-
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
         return view('components.list.modal');
     }

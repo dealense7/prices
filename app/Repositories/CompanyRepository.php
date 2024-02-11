@@ -26,7 +26,7 @@ class CompanyRepository implements CompanyRepositoryContract
 
     public function findById(int $id): ?Company
     {
-        /** @var Company|null $item */
+        /** @var \App\Models\Company|null $item */
         $item = $this->getModel()->query()->where('id', $id)->first();
 
         return $item;

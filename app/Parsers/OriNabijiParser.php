@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Parsers;
 
 class OriNabijiParser extends Parser
@@ -33,6 +35,6 @@ class OriNabijiParser extends Parser
 
     public function getImageUrl(array $item): string
     {
-        return 'https://second.media.2nabiji.ge/api/files/resize/300/300/'.$item['images'][0]['imageId'].'/'.$item['images'][0]['originalName'];
+        return 'https://second.media.2nabiji.ge/api/files/resize/300/300/' . $item['images'][0]['imageId'] . '/' . $item['images'][0]['originalName'];
     }
 }

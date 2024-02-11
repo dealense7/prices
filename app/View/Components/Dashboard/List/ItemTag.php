@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\View\Components\Dashboard\List;
 
 use App\Models\Product\Product;
@@ -15,16 +17,15 @@ class ItemTag extends Component
      */
     public function __construct(
         public Collection $tags,
-        public Product $product
-    )
-    {
+        public Product $product,
+    ) {
         //
     }
 
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
         return view('components.dashboard.list.item-tag');
     }

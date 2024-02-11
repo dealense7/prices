@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DataTransferObjects;
+declare(strict_types=1);
 
-use Illuminate\Support\Facades\Http;
+namespace App\DataTransferObjects;
 
 class ProductDto
 {

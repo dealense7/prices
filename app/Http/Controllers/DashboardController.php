@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Services\CategoryService;
@@ -34,7 +36,7 @@ class DashboardController extends Controller
             'products'   => $products,
             'categories' => $categories,
             'tags'       => $tags,
-            'companies'  => $companies
+            'companies'  => $companies,
         ]);
     }
 }

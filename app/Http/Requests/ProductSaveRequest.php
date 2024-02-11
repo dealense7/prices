@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\Category\Category;
@@ -31,7 +33,7 @@ class ProductSaveRequest extends FormRequest
             'categories.*' => [
                 'required',
                 'integer',
-                'exists:'.(new Category())->getTable().',id'
+                'exists:' . (new Category())->getTable() . ',id',
             ],
             'tags'         => [
                 'nullable',
@@ -40,7 +42,7 @@ class ProductSaveRequest extends FormRequest
             'tags.*'       => [
                 'required',
                 'integer',
-                'exists:'.(new Tag())->getTable().',id'
+                'exists:' . (new Tag())->getTable() . ',id',
             ],
             'company.id'   => [
                 'nullable',

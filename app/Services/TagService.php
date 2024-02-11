@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Contracts\Repositories\TagRepositoryContract;
@@ -8,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 class TagService
 {
     public function __construct(
-        private readonly TagRepositoryContract $repository
+        private readonly TagRepositoryContract $repository,
     ) {
         //
     }

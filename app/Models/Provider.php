@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 /**
@@ -10,7 +12,7 @@ namespace App\Models;
 class Provider extends Model
 {
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     public function getId(): int

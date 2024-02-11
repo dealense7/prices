@@ -6,9 +6,6 @@ namespace App\Support;
 
 use Illuminate\Database\Eloquent\Collection as BaseCollection;
 
-use function array_map;
-use function method_exists;
-
 class Collection extends BaseCollection
 {
     //
