@@ -16,7 +16,7 @@
                        {{$category->name}}
                    @else
                        <a  href="items?filters[parentCategoryIds][]={{$category->id}}">
-                           {{$category->name === 'ხორცი & ნახევარფაბრიკატები' ? 'ხორცი' : $category->name }}
+                           {{str_contains($category->name, 'ხორცი & ნახევარფაბრიკატები') ? 'ხორცი' : $category->name }}
                        </a>
                    @endif
                </div>
