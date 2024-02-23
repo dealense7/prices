@@ -7,7 +7,7 @@
 
             <title>@yield('title') - {{ config('app.name') }}</title>
         @else
-            <title>ურიკა | Trolley</title>
+            <title>ფასები | Prices</title>
         @endif
 
         <meta name="description" content="შეადარეთ 1000-ზე მეტი პროდუქტი სუპერმარკეტებსა და მაღაზიებში." />

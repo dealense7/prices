@@ -16,7 +16,7 @@ class HomeController extends Controller
         ProductService $productService,
         //        StoreService $storeService,
     ): View {
-        $categories = $categoryService->findItems();
+        $categories = $categoryService->getAllItems();
         $products   = $productService->getProductsGroupedByCategory();
 
         return view('welcome')->with([
@@ -31,7 +31,7 @@ class HomeController extends Controller
         ProductService $productService,
     ): View {
         $filters    = $request->get('filters', []);
-        $categories = $categoryService->findItems();
+        $categories = $categoryService->getAllItems();
         $products   = $productService->getProducts($filters);
 
         return view('items')->with([

@@ -1,18 +1,17 @@
 <div class="bg-red-400 p-8 my-4" style="background: url({{ Vite::asset('resources/imgs/bg-pattern.jpg')}}); background-size: 40%;">
 
-    <div class="grid-cols-11 grid gap-10">
-        <div class="col-span-1"></div>
+    <div class="grid-cols-5 lg:grid-cols-11 grid gap-10">
+        <div class="col-span-1 md:hidden xl:block"></div>
         <div class="col-span-6 bg-gray-100 h-[280px] flex items-center justify-between relative">
             <div class="ml-4" x-data="{open:false}">
                 <h2 class="font-bolder text-xl text-gray-800">შეადარეთ სუპერმარკეტის ფასები</h2>
                 <p class="mt-2 font-normal text-xs text-gray-700">
-                    შეადარეთ 1000-ზე მეტი პროდუქტი სუპერმარკეტებსა და მაღაზიებში.
+                    შეადარეთ 1000-მდე პროდუქტი სუპერმარკეტებსა და მაღაზიებში.
                 </p>
                 <button class="text-gray-800 font-medium text-xs mt-10 bg-white p-2 px-3" x-on:click="open=true">გზამკვლევი</button>
                 <x-roadmap/>
-
             </div>
-            <div class="h-[240px] absolute right-0 bottom-0">
+            <div class="h-[180px] xl:h-[210px] absolute right-0 bottom-0">
                 <img src="{{ Vite::asset('resources/imgs/banner1.png') }}" class="h-full w-full object-contain">
             </div>
             <div class="top-3 z-10 absolute right-3 flex items-center gap-2">
@@ -32,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-span-3 bg-[#fad071] relative flex items-center justify-between">
+        <div class="hidden lg:flex col-span-5 xl:col-span-3 bg-[#fad071] relative items-center justify-between">
             <div class="ml-3 grid">
                 <div class="flex items-baseline mt-2">
                     <h5 class="font-bolder text-xl">3.75 ₾</h5>
@@ -46,12 +45,12 @@
                 <button class="text-gray-800 font-medium text-xs mt-10 bg-white p-2 px-3">კალათაში ჩამატება</button>
 
             </div>
-            <div class="h-[240px] absolute right-0 bottom-0">
-                <img src="{{ Vite::asset('resources/imgs/banner2.png') }}" class="h-full w-full object-contain">
+            <div class="flex items-center justify-center h-full w-[130px]">
+                <div class="h-[21ს0px] w-full ">
+                    <img src="{{ Vite::asset('resources/imgs/banner2.png') }}" class="h-full w-full object-contain">
+                </div>
             </div>
         </div>
-
-        <div class="col-span-1"></div>
     </div>
 
 </div>

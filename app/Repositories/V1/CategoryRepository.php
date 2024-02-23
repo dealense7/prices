@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Repositories\V1;
 
 use App\Contracts\Repositories\CategoryRepositoryContract;
 use App\Models\Category\Category;
+use App\Repositories\Repository;
 use App\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -23,6 +24,7 @@ class CategoryRepository extends Repository implements CategoryRepositoryContrac
         $items = $this->getData($filters)
             ->with([
                 'translation',
+                'children.products',
                 'children.translation',
             ])
             ->whereNull('parent_id');
@@ -41,7 +43,11 @@ class CategoryRepository extends Repository implements CategoryRepositoryContrac
         $items = $this->getData($filters)
             ->with([
                 'translation',
-                'children.translation',
+                'children' => static function ($query) {
+                    $query->with('translation')->whereHas('products', static function ($query) {
+                        $query->where('show', true);
+                });
+                },
             ])
             ->whereNull('parent_id')->get();
 

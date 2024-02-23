@@ -6,6 +6,7 @@ use App\Enums\Providers;
 use App\Models\Provider;
 use App\Parsers\GlovoParser;
 use App\Parsers\OriNabijiParser;
+use App\Parsers\WoltParser;
 use Illuminate\Database\Seeder;
 use function Laravel\Prompts\text;
 
@@ -23,6 +24,11 @@ class ProviderSeeder extends Seeder
                 'id'    => Providers::OriNabiji->value,
                 'name'  => Providers::OriNabiji->text(),
                 'class' => OriNabijiParser::class
+            ],
+            [
+                'id'    => Providers::Wolt->value,
+                'name'  => Providers::Wolt->text(),
+                'class' => WoltParser::class
             ]
         ];
 

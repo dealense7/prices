@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Repositories\V1;
 
 use App\Contracts\Repositories\ProductRepositoryContract;
 use App\Models\Category\Category;
@@ -38,7 +38,7 @@ class ProductRepository implements ProductRepositoryContract
                 '=',
                 (new ProductTranslation())->getTable() . '.id'
             )
-            ->where((new ProductTranslation())->getTable() . '.name', 'LIKE', '%რძე%')
+//            ->where((new ProductTranslation())->getTable() . '.name', 'LIKE', '%კვერცხი%')
             ->where('products.show', false)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)
@@ -256,3 +256,5 @@ class ProductRepository implements ProductRepositoryContract
         return new ProductPrice();
     }
 }
+
+

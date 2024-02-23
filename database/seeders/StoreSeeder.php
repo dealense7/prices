@@ -30,6 +30,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/70098/addresses/136831/search?query='
+                    ],
+                    [
+                        'provider_id' => Providers::Wolt->value,
+                        'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/carrefour-vake/menu/items?unit_prices=true&show_weighted_items=true&q='
                     ]
                 ]
             ],
@@ -41,11 +45,15 @@ class StoreSeeder extends Seeder
                 'urls' => [
                     [
                         'provider_id' => Providers::Glovo->value,
-                        'url'         => 'https://api.glovoapp.com/v3/stores/96349/addresses/182498/search?query='
+                        'url'         => 'https://api.glovoapp.com/v3/stores/96349/addresses/182499/search?query='
                     ],
                     [
-                        'provider_id' => Providers::Glovo->value,
-                        'url'         => 'https://api.glovoapp.com/v3/stores/96349/addresses/183885/search?query='
+                        'provider_id' => Providers::Wolt->value,
+                        'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/goodwill-galleria-tbilisi/menu/items?unit_prices=true&show_weighted_items=true&q='
+                    ],
+                    [
+                        'provider_id' => Providers::Wolt->value,
+                        'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/goodwill-vake/menu/items?unit_prices=true&show_weighted_items=true&q='
                     ]
                 ]
             ],
@@ -106,6 +114,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/251808/addresses/389138/search?query='
+                    ],
+                    [
+                        'provider_id' => Providers::Wolt->value,
+                        'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/magniti-shrosha/menu/items?unit_prices=true&show_weighted_items=true&q='
                     ]
                 ]
             ],
@@ -118,6 +130,10 @@ class StoreSeeder extends Seeder
                     [
                         'provider_id' => Providers::Glovo->value,
                         'url'         => 'https://api.glovoapp.com/v3/stores/95869/addresses/181642/search?query='
+                    ],
+                    [
+                        'provider_id' => Providers::Wolt->value,
+                        'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/europroduct-petriashvili/menu/items?unit_prices=true&show_weighted_items=true&q='
                     ]
                 ]
             ],

@@ -27,7 +27,7 @@ class DashboardController extends Controller
 
         $stores     = $storeService->findItems();
         $products   = $productService->findItems($filters, $page, $perPage, $sort);
-        $categories = $categoryService->findItems();
+        $categories = $categoryService->getAllItems();
         $tags       = $tagService->findItems();
         $companies  = $companyService->findItems();
 

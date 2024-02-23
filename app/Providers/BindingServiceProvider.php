@@ -9,10 +9,10 @@ use App\Contracts\Repositories\CompanyRepositoryContract;
 use App\Contracts\Repositories\ProductRepositoryContract;
 use App\Contracts\Repositories\TagRepositoryContract;
 use App\Contracts\Services\CategoryServiceContract;
-use App\Repositories\CategoryRepository;
-use App\Repositories\CompanyRepository;
-use App\Repositories\ProductRepository;
-use App\Repositories\TagRepository;
+use App\Repositories\V1\CategoryRepository;
+use App\Repositories\V1\CompanyRepository;
+use App\Repositories\V1\ProductRepository;
+use App\Repositories\V1\TagRepository;
 use App\Services\V1\CategoryService;
 use Illuminate\Support\ServiceProvider;
 

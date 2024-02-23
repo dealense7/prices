@@ -36,6 +36,7 @@ class SaveFetchedProduct implements ShouldQueue
         private readonly int $storeId,
         private readonly int $categoryId,
         private readonly int $parentCategoryId,
+        private readonly string $text,
     ) {
     }
 
@@ -46,15 +47,16 @@ class SaveFetchedProduct implements ShouldQueue
 
         $items = collect($this->items)->whereNotIn('code', $products->pluck('code')->toArray());
 
-        // How many we had to save for this time.
-        dump(count($this->items) . ' -> ' . $items->count());
+        if (count($this->items) === 0) {
+            dump($this->text);
+        }
 
         DB::transaction(function () use ($items) {
             /** @var \App\DataTransferObjects\ProductDto $item */
             foreach ($items as $item) {
                 $productId = $this->createProduct($item);
 
-                if (! empty($item->imageUrl)) {
+                if (!empty($item->imageUrl)) {
                     $this->downloadImage($productId, $item->code, $item->imageUrl);
                 }
             }
@@ -79,6 +81,7 @@ class SaveFetchedProduct implements ShouldQueue
         $this->createTranslations($productId, $item->name);
         $this->createCompany($productId, $item->companyName);
         $this->createCategory($productId);
+        $this->createTag($productId, $item->tag, $item->tagName);
 
         return $productId;
     }
@@ -98,9 +101,8 @@ class SaveFetchedProduct implements ShouldQueue
         ?string $tag,
         ?string $tagName,
     ): void {
-        $tagId = TagType::Quantity;
 
-        if (! empty($tag) && ! empty($tagName)) {
+        if (!empty($tag) && !empty($tagName)) {
             if ($tagName === 'გ') {
                 $tagName = 'გრ';
             } elseif (in_array($tagName, ['ლ', 'კგ'], true) && floatval($tag) < 1) {
@@ -109,7 +111,7 @@ class SaveFetchedProduct implements ShouldQueue
             }
 
             /** @var \App\Models\Tag\TagTranslation|null $tagTranslation */
-            $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag . ' ' . $tagName)->first();
+            $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag.' '.$tagName)->first();
             $tagId          = $tagTranslation?->tag_id;
 
             if ($tagId === null) {
@@ -136,16 +138,16 @@ class SaveFetchedProduct implements ShouldQueue
                     ->insert([
                         'tag_id'      => $tagId,
                         'language_id' => Languages::Georgian->value,
-                        'name'        => $tag . ' ' . $tagName,
+                        'name'        => $tag.' '.$tagName,
                     ]);
             }
-        }
 
-        DB::table((new Product())->tags()->getTable())
-            ->insert([
-                'product_id' => $productId,
-                'tag_id'     => $tagId,
-            ]);
+            DB::table((new Product())->tags()->getTable())
+                ->insert([
+                    'product_id' => $productId,
+                    'tag_id'     => $tagId,
+                ]);
+        }
     }
 
     private function createCompany(
@@ -205,15 +207,15 @@ class SaveFetchedProduct implements ShouldQueue
                 $imageContent = file_get_contents($url);
 
                 if ($imageContent) {
-                    $filename = $code . '.' . $extension;
+                    $filename = $code.'.'.$extension;
 
-                    Storage::disk('public')->put('products' . '/' . $filename, $imageContent);
+                    Storage::disk('public')->put('products'.'/'.$filename, $imageContent);
 
-                    $diskUrl = Storage::disk('public')->path('products' . '/' . $filename);
+                    $diskUrl = Storage::disk('public')->path('products'.'/'.$filename);
 
                     $data = [
                         'name'          => $filename,
-                        'path'          => 'products' . '/' . $filename,
+                        'path'          => 'products'.'/'.$filename,
                         'size'          => filesize($diskUrl),
                         'extension'     => $extension,
                         'fileable_id'   => $productId,

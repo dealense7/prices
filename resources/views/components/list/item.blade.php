@@ -1,4 +1,4 @@
-<div class="col-span-1 bg-white p-4 rounded-sm shadow relative">
+<div class="col-span-1 grid bg-white p-4 rounded-[7px] shadow relative">
     <div
         class="w-full h-full cursor-pointer z-10 absolute left-0 top-0"
          x-on:click="
@@ -27,8 +27,8 @@
         @endif
     </div>
 
-    <div class="h-[200px] relative">
-        <img loading="lazy" class="object-contain absolute h-full w-full" src="storage/{{$product->images->first()->path ?? ''}}">
+    <div class="h-[200px] flex items-center justify-center relative">
+        <img loading="lazy" class="object-contain absolute h-full w-max" src="storage/{{$product->images->first()->path ?? ''}}">
     </div>
 
     <div class="flex items-center gap-3 my-2">
@@ -39,10 +39,12 @@
         @endforeach
     </div>
 
-    <h4 class="font-bold text-sm mb-1 text-gray-900 truncate ">{{$product->name}}</h4>
+    <h4 class="font-bold text-[12px] mb-1 text-gray-900 whitespace-nowrap truncate w-full">{{$product->name}}</h4>
     <h5 class="font-normal text-xs text-gray-700">
         {{$product->company->name ?? ''}}
-        {{$product->id ?? ''}}
+        {{$product->id ?? '     '}}
+        {{'s: ' . $product->categories->first()->id}}
+        {{'s: ' . $product->categories->first()->parent_id}}
     </h5>
 
     <div class="flex  justify-between">

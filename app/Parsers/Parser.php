@@ -24,6 +24,8 @@ abstract class Parser
 
     abstract public function getPrice(array $item): int;
 
+    abstract public function getPriceBeforeSale(array $item): ?int;
+
     abstract public function getCurrencyCode(array $item): string;
 
     abstract public function getImageUrl(array $item): ?string;
@@ -35,10 +37,10 @@ abstract class Parser
                 ->withHeaders([
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 ])
-                ->get($this->url . urlencode($keyword))->json();
+                ->get($this->url.urlencode($keyword))->json();
         } catch (Throwable $e) {
-            info('URL: ' . $this->url . urlencode($keyword));
-            info($e->getMessage());
+            dump('URL: '.$this->url.urlencode($keyword));
+            dump($e->getMessage());
         }
     }
 
@@ -61,6 +63,7 @@ abstract class Parser
                 companyName: $this->getCompanyName($item),
                 tag: $this->getTag($item),
                 tagName: $this->getTagName($item),
+                priceBeforeSale: $this->getPriceBeforeSale($item),
             );
         }
 
@@ -80,7 +83,7 @@ abstract class Parser
     {
         preg_match('/(\d+(?:\.\d+)?)\s*(ლ|მლ|კგ|გრ|გ|ც)/', $this->getName($item), $matches);
 
-        return ! empty($matches[2]) ? $matches[2] : data_get($matches, 3);
+        return !empty($matches[2]) ? $matches[2] : data_get($matches, 3);
     }
 
     public function getCompanyName(array $item): ?string

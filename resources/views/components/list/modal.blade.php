@@ -29,8 +29,8 @@
             </div>
             <!-- Modal body -->
             <div class="p-4 md:p-5 space-y-4">
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="col-span-1">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="col-span-2 sm:col-span-1 w-3/4 m-auto h-full sm:w-full relative">
                         <img :src="imgUrl"/>
                     </div>
                     <div class="col-span-2">
@@ -42,10 +42,8 @@
                                     <div class="flex items-center gap-2">
                                         <img :src='price.companyLogo' class="w-8 object-contain h-8">
                                         <div class="flex flex-col">
-                                                        <span class="font-medium text-xs"
-                                                              x-text="price.companyName"></span>
-                                            <span class="font-normal text-[10px]"
-                                                  x-text="price.companyYear"></span>
+                                            <span class="font-medium text-xs" x-text="price.companyName"></span>
+                                            <span class="font-normal text-[10px]"x-text="price.companyYear"></span>
                                         </div>
                                     </div>
                                     <div class="grid">

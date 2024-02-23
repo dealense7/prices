@@ -30,6 +30,7 @@ class Category extends Model
         'show',
         'parent_id',
         'foreignId',
+        'icon_path'
     ];
 
     public function getId(): int

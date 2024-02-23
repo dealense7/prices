@@ -39,10 +39,11 @@ class ParseStoreProducts implements ShouldQueue
 
 
         /** @var \App\Models\Url $url */
-        foreach ($this->store->urls as $url) {
+        foreach ($this->store->urls->sortByDesc('provider_id') as $url) {
             $parser = $url->resolveProvider();
 
-            foreach ($keywords as $word) {
+            foreach ($keywords as $key => $word) {
+
                 // Fetch Items
                 $parser->fetchData($word['name']);
 
@@ -50,15 +51,15 @@ class ParseStoreProducts implements ShouldQueue
                 $fetchedItems = $parser->getItems();
                 $totalItems   += count($fetchedItems);
 
+                $text = 'Provider: ' . $url->provider->name . '; Store: ' . $this->store->name. ' Word: ' . $word['name'];
                 // I don't want to fetch more products, that's why I commented this line.
-//                SaveFetchedProduct::dispatch($fetchedItems, $this->store->getId(), $word['category_id'], $word['parent_category_id']);
+                SaveFetchedProduct::dispatch($fetchedItems, $this->store->getId(), $word['category_id'], $word['parent_category_id'], $text);
 
                 SaveFetchedPrices::dispatch($fetchedItems, $this->store->getId(), $url->provider->getId());
             }
-            // this is necessary to don't get blocked for many requests, if you have crazy amounts of keywords it's recommended to send max 50-60 request in about 10 seconds, depends on site.
-            sleep(20);
-        }
+            sleep(30);
 
+        }
         // Total fetched items from a store
         dump($this->store->name . ' items:' . $totalItems);
     }

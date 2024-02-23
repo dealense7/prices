@@ -39,6 +39,10 @@ class Product extends Model
         'company_id',
     ];
 
+    protected $casts = [
+        'show' => 'boolean'
+    ];
+
     public function getId(): int
     {
         return $this->id;
@@ -64,7 +68,7 @@ class Product extends Model
         return $this->code;
     }
 
-    public function getQuantityAttribute(): string
+    public function getQuantityAttribute(): float|int
     {
         $tag = $this->tags->first();
 
@@ -77,7 +81,6 @@ class Product extends Model
 
     public function getSizeAttribute(): string
     {
-//        dump($this->id);
         $tag = $this->tags->first();
 
         return match ($tag->type) {
@@ -171,7 +174,7 @@ class Product extends Model
         });
     }
 
-    private function calculateSize($tag): string
+    private function calculateSize($tag): float|int
     {
         $size = floatval($tag->name);
 
@@ -182,7 +185,7 @@ class Product extends Model
         return $size;
     }
 
-    private function calculateWeight($tag): string
+    private function calculateWeight($tag): float|int
     {
         $size = floatval($tag->name);
 

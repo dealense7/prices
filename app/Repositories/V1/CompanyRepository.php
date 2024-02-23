@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Repositories\V1;
 
 use App\Contracts\Repositories\CompanyRepositoryContract;
 use App\Models\Company;

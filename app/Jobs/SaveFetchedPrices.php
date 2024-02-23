@@ -101,12 +101,14 @@ class SaveFetchedPrices implements ShouldQueue
 
             // Set active to new price
             DB::table($priceTable)->insert([
-                'product_id'  => $id,
-                'price'       => $item->price,
-                'store_id'    => $this->storeId,
-                'provider_id' => $this->providerId,
-                'created_at'  => now(),
-                'active'      => true,
+                'product_id'        => $id,
+                'price'             => $item->price,
+                'store_id'          => $this->storeId,
+                'provider_id'       => $this->providerId,
+                'created_at'        => now(),
+                'active'            => true,
+                'is_sale'           => $item->priceBeforeSale !== null && $item->price < $item->priceBeforeSale,
+                'price_before_sale' => $item->priceBeforeSale
             ]);
         }
     }

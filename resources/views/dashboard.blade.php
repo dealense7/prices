@@ -4,7 +4,7 @@
     <x-home.stores :stores="$stores"/>
     <div class="flex flex-col [&>*:nth-child(even)]:bg-gray-200">
         @foreach($products as $product)
-            <div class="grid grid-cols-4 gap-3 p-3 rounded-sm w-full">
+            <div class="grid grid-cols-4 gap-3 p-3 rounded-sm w-full" id="dashboarditem{{$product->id}}">
                 {{-- Title and Image --}}
                 <div class="col-span-1 ">
                     <div class="w-full h-[40px]">
@@ -28,7 +28,7 @@
                     <div class="w-full h-[40px]">
                         <x-dashboard.list.item-company :companies="$companies" :product="$product"  />
                     </div>
-                    <div x-data="{show:{{$product->show}}}" class="flex items-center gap-2">
+                    <div x-data="{show:{{$product->show ? 'true' : 'false'}}}" class="flex items-center gap-2">
                         <div
                             :class="!show ? 'bg-red-400' : 'bg-green-400'" class="p-2 rounded-md cursor-pointer"
                              x-on:click="() => {
@@ -65,7 +65,8 @@
                                      body: JSON.stringify({ show: show }) // Fix the syntax error here
                                     }
                                 )
-                                .then(response => response.json())
+                                .then(response => response.json());
+                                document.getElementById('dashboarditem{{$product->id}}').remove()
                             }"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" class="bi bi-trash3-fill" viewBox="0 0 16 16">

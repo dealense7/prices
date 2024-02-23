@@ -16,6 +16,7 @@ class ProductDto
         public readonly ?string $categoryId = null,
         public readonly ?string $tag = null,
         public readonly ?string $tagName = null,
+        public readonly ?int $priceBeforeSale = null,
     ) {
     }
 }
