@@ -42,9 +42,6 @@
     <h4 class="font-bold text-[12px] mb-1 text-gray-900 whitespace-nowrap truncate w-full">{{$product->name}}</h4>
     <h5 class="font-normal text-xs text-gray-700">
         {{$product->company->name ?? ''}}
-        {{$product->id ?? '     '}}
-        {{'s: ' . $product->categories->first()->id}}
-        {{'s: ' . $product->categories->first()->parent_id}}
     </h5>
 
     <div class="flex  justify-between">
