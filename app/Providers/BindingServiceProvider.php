@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\CacheRepositories\V1\CategoryCacheRepository;
+use App\CacheRepositories\V1\ProductCacheRepository;
 use App\Contracts\Repositories\CategoryRepositoryContract;
 use App\Contracts\Repositories\CompanyRepositoryContract;
 use App\Contracts\Repositories\ProductRepositoryContract;
@@ -27,9 +29,11 @@ class BindingServiceProvider extends ServiceProvider
         ],
         CategoryRepositoryContract::class => [
             CategoryRepository::class,
+            CategoryCacheRepository::class
         ],
         ProductRepositoryContract::class  => [
             ProductRepository::class,
+            ProductCacheRepository::class,
         ],
     ];
     private const SERVICES     = [
@@ -49,7 +53,6 @@ class BindingServiceProvider extends ServiceProvider
     {
         $defaultVersion = 'v1';
         $apiVersion     = strtolower($this->app['request']->header('X-Api-Version', $defaultVersion));
-//        dd($apiVersion);
 
         $cacheServices = config('custom.constants.cache_services');
         $classes       = [

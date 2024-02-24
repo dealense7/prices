@@ -86,7 +86,7 @@ class ProductRepository implements ProductRepositoryContract
                 },
             ])
             ->with('translation')
-//            ->inRandomOrder()
+            ->inRandomOrder()
             ->limit(4)
             ->has('allProducts', '>=', 14)
             ->get()

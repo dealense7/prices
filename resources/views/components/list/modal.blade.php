@@ -28,7 +28,7 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <div class="p-4 md:p-5 space-y-4">
+            <div class="p-4 md:p-5 space-y-4 max-h-[70vh] overflow-auto">
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     <div class="col-span-2 sm:col-span-1 w-3/4 m-auto h-full sm:w-full relative">
                         <img :src="imgUrl"/>
@@ -80,6 +80,7 @@
             <div
                 class="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                 <div class="flex items-center">
+                    <button x-on:click="open = false" class="block w-full rounded-md bg-gray-200 px-3 py-2 text-center text-xs font-normal text-gray-700 shadow-sm ">დახურვა</button>
                 </div>
                 <h5 class="font-normal text-[10px] text-gray-800 mt-1.5" x-text="updated"></h5>
             </div>
