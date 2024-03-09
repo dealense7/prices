@@ -18,9 +18,14 @@ class WoltParser extends Parser
 
     public function getCode(array $item): int
     {
-        preg_match('/\b\d{13}\b/', $item['name'], $matches);
+        $code = data_get($item, 'barcode_gtin', 0);
 
-        $code = data_get($matches, 0, 0);
+        if ($code === 0)
+        {
+            preg_match('/\b\d{13}\b/', $item['name'], $matches);
+
+            $code = data_get($matches, 0, 0);
+        }
 
         if (
             $code === 0
@@ -33,7 +38,7 @@ class WoltParser extends Parser
             $code = data_get($matches, 1, 0);
         }
 
-        return (int) $code;
+        return strlen($code) === 13 ? (int) $code : 0;
     }
 
     public function getName(array $item): string

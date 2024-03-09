@@ -43,7 +43,7 @@ class ProductRepository implements ProductRepositoryContract
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)
             ->groupBy($productPriceTable . '.product_id')
-            ->having('count', '>', 1)
+//            ->having('count', '>', 1)
             ->paginate($model->getValidPerPage($perPage), ['*'], 'page', $page);
 
         $productIds = collect($products->items())->pluck('product_id')->toArray();

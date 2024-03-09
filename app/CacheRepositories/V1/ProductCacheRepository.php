@@ -41,9 +41,9 @@ class ProductCacheRepository extends CacheRepository implements ProductRepositor
             func_get_args(),
         ], 'findItems');
 
-        return $this->setTag()->remember($key, function () use ($filters, $page, $perPage, $sort) {
+//        return $this->setTag()->remember($key, function () use ($filters, $page, $perPage, $sort) {
             return $this->repository->findItems($filters, $page, $perPage, $sort);
-        });
+//        });
     }
 
     public function getProductsGroupedByCategory(): Collection
