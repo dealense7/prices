@@ -9,7 +9,7 @@
                     შეადარეთ 1000-მდე პროდუქტი სუპერმარკეტებსა და მაღაზიებში.
                 </p>
                 <button class="text-gray-800 font-medium text-xs mt-10 bg-white p-2 px-3" x-on:click="open=true">გზამკვლევი</button>
-                <x-roadmap/>
+
             </div>
             <div class="h-[180px] xl:h-[210px] absolute right-0 bottom-0">
                 <img src="{{ Vite::asset('resources/imgs/banner1.png') }}" class="h-full w-full object-contain">

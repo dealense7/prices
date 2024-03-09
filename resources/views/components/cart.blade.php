@@ -8,18 +8,18 @@
 
     <div class="relative p-4 w-full max-w-2xl max-h-full z-20">
         <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
             <div
-                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                 <div class="font-normal text-[12px]">
-                    <h3 class="text-base font-bolder text-gray-900 dark:text-white">
+                    <h3 class="text-base font-bolder text-gray-900">
                         კალათა
                     </h3>
                     <small id="totalProducts"></small>
                 </div>
                 <button x-on:click="open = false" type="button"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                         data-modal-hide="static-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 14 14">
@@ -77,7 +77,7 @@
             </div>
             <!-- Modal footer -->
             <div
-                class="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                class="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b">
                 <h5 class="font-normal text-[12px] text-gray-800 mt-1.5" >ჯამში: <span class="font-bold text-gray-900" id="totalPriceCartModal"></span> ₾</h5>
                 <h5 class="font-normal text-[12px] text-gray-800 mt-1.5" >დაზოგე: <span class="font-bold text-green-700" id="totalSavedCartModal"></span> </h5>
             </div>

@@ -30,9 +30,11 @@ class HomeController extends Controller
         CategoryService $categoryService,
         ProductService $productService,
     ): View {
-        $filters    = $request->get('filters', []);
+        $filters = $this->getInputFilters();
+        $page = $this->getInputPage();
+
         $categories = $categoryService->getAllItems();
-        $products   = $productService->getProducts($filters);
+        $products   = $productService->getProducts($filters, $page);
 
         return view('items')->with([
             'categories' => $categories,

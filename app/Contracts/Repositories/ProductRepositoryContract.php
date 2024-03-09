@@ -19,7 +19,7 @@ interface ProductRepositoryContract
 
     public function getProductsGroupedByCategory(): Collection;
 
-    public function getProducts(array $filters = []): LengthAwarePaginator;
+    public function getProducts(array $filters = [], int $page = 1): LengthAwarePaginator;
 
     public function findById(int $id): ?Product;
 

@@ -5,6 +5,7 @@ import.meta.glob([
     '../fonts/**',
 ]);
 
+window.productCartIds = [];
 const fetchPrice = async (items) => {
 
     if (items.length < 1) {
@@ -57,14 +58,13 @@ const fetchPrice = async (items) => {
     return fetchedItems;
 }
 
-window.productCartIds = [];
 
 window.cartItems = () => {
     return {
         items: [],
         async getItems() {
-
-            window.productCartIds = JSON.parse(localStorage.getItem("itemIds") ?? '{}');
+            const storedValue = localStorage.getItem("itemIds");
+            window.productCartIds = storedValue ? JSON.parse(storedValue) : [];
 
             window.productCartIds.forEach(item => {
                 if (document.getElementById('addProductToCart' + item.id)) {

@@ -35,9 +35,9 @@ class ProductService
         return $this->repository->getProductsGroupedByCategory();
     }
 
-    public function getProducts(array $filters = []): LengthAwarePaginator
+    public function getProducts(array $filters = [], int $page = 1): LengthAwarePaginator
     {
-        return $this->repository->getProducts($filters);
+        return $this->repository->getProducts($filters, $page);
     }
 
     public function findById(int $id): ?Product

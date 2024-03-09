@@ -2,10 +2,8 @@
 
 @section('content')
 
-    <x-home.slider/>
 
     <x-list.categories :categories="$categories" />
-
 
     <div x-data="{
             open:false,
@@ -33,7 +31,9 @@
             }
         }"
         >
-
+            @php
+                \Carbon\Carbon::setLocale('ka');
+            @endphp
             @foreach($products as $category)
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 mt-3 gap-3">
 
@@ -44,17 +44,14 @@
                             <small class="text-[9px]">სულ: {{$category->all_products_count}}</small>
                         </a>
                     </div>
-                    @php
-                        \Carbon\Carbon::setLocale('ka');
-                    @endphp
+
                     @foreach($category->allProducts as $product)
 
                         <x-list.item :product="$product" />
                     @endforeach
                 </div>
             @endforeach
-
-                <x-list.modal />
+            <x-list.modal />
         </div>
     </div>
 @endsection

@@ -7,17 +7,17 @@
 
     <div class="relative p-4 w-full max-w-2xl max-h-full z-20">
         <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
             <div
-                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                 <div class="font-normal text-[10px]">
-                    <h3 class="text-base font-bolder text-gray-900 dark:text-white" x-text="title">
+                    <h3 class="text-base font-bolder text-gray-900" x-text="title">
                     </h3>
                     <smal x-text="company"></smal>
                 </div>
                 <button x-on:click="open = false" type="button"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                         data-modal-hide="static-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 14 14">
@@ -30,8 +30,8 @@
             <!-- Modal body -->
             <div class="p-4 md:p-5 space-y-4 max-h-[70vh] overflow-auto">
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    <div class="col-span-2 sm:col-span-1 w-3/4 m-auto h-full sm:w-full relative">
-                        <img :src="imgUrl"/>
+                    <div class="col-span-2 max-h-[180px] sm:col-span-1 w-3/4 m-auto h-full sm:w-full relative">
+                        <img :src="imgUrl" class="h-full w-full object-contain"/>
                     </div>
                     <div class="col-span-2">
                         <h4 class="font-bold text-sm">სად შეძლებ ყიდვას</h4>
@@ -78,7 +78,7 @@
             </div>
             <!-- Modal footer -->
             <div
-                class="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                class="flex items-center justify-between p-4 md:p-5 border-t border-gray-200 rounded-b">
                 <div class="flex items-center">
                     <button x-on:click="open = false" class="block w-full rounded-md bg-gray-200 px-3 py-2 text-center text-xs font-normal text-gray-700 shadow-sm ">დახურვა</button>
                 </div>

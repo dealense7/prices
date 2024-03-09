@@ -55,7 +55,7 @@ class ProductCacheRepository extends CacheRepository implements ProductRepositor
         }, 15);
     }
 
-    public function getProducts(array $filters = []): LengthAwarePaginator
+    public function getProducts(array $filters = [], int $page = 1): LengthAwarePaginator
     {
         $key = $this->createKeyFromArgs([
             func_get_args(),
