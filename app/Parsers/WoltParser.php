@@ -38,7 +38,7 @@ class WoltParser extends Parser
             $code = data_get($matches, 1, 0);
         }
 
-        return strlen($code) === 13 ? (int) $code : 0;
+        return strlen((string) $code) === 13 ? (int) $code : 0;
     }
 
     public function getName(array $item): string
