@@ -42,6 +42,20 @@ class GlovoParser extends Parser
         return explode('/', $item['name'])[0];
     }
 
+    public function getTag(array $item): ?string
+    {
+        preg_match('/(\d+(?:\.\d+)?)\s*(ლ|მლ|კგ|გრ|გ|ც)/', $item['sellType'], $matches);
+
+        return data_get($matches, 1, '');
+    }
+
+    public function getTagName(array $item): ?string
+    {
+        preg_match('/(\d+(?:\.\d+)?)\s*(ლ|მლ|კგ|გრ|გ|ც)/', $item['sellType'], $matches);
+
+        return !empty($matches[2]) ? $matches[2] : data_get($matches, 3);
+    }
+
     public function getPrice(array $item): int
     {
         $promotion = Arr::get($item, 'promotion');

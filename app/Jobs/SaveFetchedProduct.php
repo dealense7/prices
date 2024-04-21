@@ -34,22 +34,18 @@ class SaveFetchedProduct implements ShouldQueue
     public function __construct(
         private readonly array $items,
         private readonly int $storeId,
-        private readonly int $categoryId,
-        private readonly int $parentCategoryId,
-        private readonly string $text,
     ) {
     }
 
     public function handle(): void
     {
+        // Fetch products that I have saved with same bar code
+        // So I can prevent duplicate products in my DB
         $productCodes = Arr::pluck($this->items, 'code');
         $products     = $this->getProductByCode($productCodes);
 
         $items = collect($this->items)->whereNotIn('code', $products->pluck('code')->toArray());
 
-        if (count($this->items) === 0) {
-            dump($this->text);
-        }
 
         DB::transaction(function () use ($items) {
             /** @var \App\DataTransferObjects\ProductDto $item */
@@ -80,7 +76,6 @@ class SaveFetchedProduct implements ShouldQueue
 
         $this->createTranslations($productId, $item->name);
         $this->createCompany($productId, $item->companyName);
-        $this->createCategory($productId);
         $this->createTag($productId, $item->tag, $item->tagName);
 
         return $productId;
@@ -88,6 +83,7 @@ class SaveFetchedProduct implements ShouldQueue
 
     private function createTranslations(int $productId, string $name): void
     {
+        // At this time I don't care about translations I will edit this little late
         DB::table((new ProductTranslation())->getTable())
             ->insert([
                 'product_id'  => $productId,
@@ -154,6 +150,7 @@ class SaveFetchedProduct implements ShouldQueue
         int $productId,
         ?string $companyName = null,
     ): void {
+        // I will create company with any random name to save time while validate data
         if ($companyName) {
             $companyId = DB::table((new Company())->getTable())->where('name', $companyName)->first()?->id;
 
@@ -168,16 +165,6 @@ class SaveFetchedProduct implements ShouldQueue
                     ]);
             }
         }
-    }
-
-    private function createCategory(int $productId,): void
-    {
-        DB::table((new Product())->categories()->getTable())
-            ->insert([
-                'product_id'         => $productId,
-                'category_id'        => $this->categoryId,
-                'parent_category_id' => $this->parentCategoryId,
-            ]);
     }
 
     private function downloadImage(

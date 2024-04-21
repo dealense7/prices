@@ -59,16 +59,18 @@ class SaveFetchedPrices implements ShouldQueue
 
     private function createPrice(ProductDto $item, int $id, string $priceTable): void
     {
-//        You can uncomment this to remove old prices from the products, I mean if a store stopped selling the product, and you can no longer update price for that store.
 
-//        DB::table($priceTable)
-//            ->where('product_id', $id)
-//            ->where('created_at', '<=', now()->subWeeks(2)->toDateString())
-//            ->update([
-//                'active' => false,
-//            ]);
+        // If I have a week-old price in DB and that price is not updating I don't care about it anymore
+        // maybe that product is already removed from the branch
+        DB::table($priceTable)
+            ->where('product_id', $id)
+            ->where('created_at', '<=', now()->subWeek()->toDateString())
+            ->update([
+                'active' => false,
+            ]);
 
-        // If you have few urls for a store, you may already updated price for the product, but on different location you found that for much cheaper.
+        // If you have few urls for a store, you may already update price for the product but maybe this time you have fond much chipper price
+        // sometimes some online providers have not updated prices
         $price = DB::table($priceTable)->select('price')
             ->where('product_id', $id)
             ->where('store_id', $this->storeId)

@@ -44,17 +44,9 @@ class StoreSeeder extends Seeder
                 'img'  => 'goodwill.png',
                 'urls' => [
                     [
-                        'provider_id' => Providers::Glovo->value,
-                        'url'         => 'https://api.glovoapp.com/v3/stores/96349/addresses/182499/search?query='
+                        'provider_id' => Providers::Goodwill->value,
+                        'url'         => 'https://api.goodwill.ge/'
                     ],
-                    [
-                        'provider_id' => Providers::Wolt->value,
-                        'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/goodwill-galleria-tbilisi/menu/items?unit_prices=true&show_weighted_items=true&q='
-                    ],
-                    [
-                        'provider_id' => Providers::Wolt->value,
-                        'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/goodwill-vake/menu/items?unit_prices=true&show_weighted_items=true&q='
-                    ]
                 ]
             ],
             [
@@ -80,12 +72,8 @@ class StoreSeeder extends Seeder
                 'year' => 1932,
                 'urls' => [
                     [
-                        'provider_id' => Providers::Glovo->value,
-                        'url'         => 'https://api.glovoapp.com/v3/stores/26609/addresses/162083/search?query='
-                    ],
-                    [
-                        'provider_id' => Providers::Glovo->value,
-                        'url'         => 'https://api.glovoapp.com/v3/stores/26609/addresses/369777/search?query='
+                        'provider_id' => Providers::Spar->value,
+                        'url'         => 'https://api.spargeorgia.com/'
                     ]
                 ]
             ],

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\Providers;
 use App\Models\Provider;
 use App\Parsers\GlovoParser;
+use App\Parsers\GoodwillParser;
 use App\Parsers\OriNabijiParser;
 use App\Parsers\WoltParser;
 use Illuminate\Database\Seeder;
@@ -29,6 +30,11 @@ class ProviderSeeder extends Seeder
                 'id'    => Providers::Wolt->value,
                 'name'  => Providers::Wolt->text(),
                 'class' => WoltParser::class
+            ],
+            [
+                'id'    => Providers::Goodwill->value,
+                'name'  => Providers::Goodwill->text(),
+                'class' => GoodwillParser::class
             ]
         ];
 

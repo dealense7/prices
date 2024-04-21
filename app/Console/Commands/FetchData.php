@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Enums\Stores;
 use App\Jobs\ParseStoreProducts;
 use App\Models\Store;
 use Illuminate\Console\Command;
@@ -20,6 +21,7 @@ class FetchData extends Command
         $stores = $this->getStores();
 
         // Start fetching data from the stores
+        // Making it as job give as ability to run processes on parallel
         /** @var \App\Models\Store $store */
         foreach ($stores as $store) {
             dispatch(new ParseStoreProducts($store));
@@ -29,6 +31,7 @@ class FetchData extends Command
     private function getStores(): Collection
     {
         return Store::query()
+            ->where('id', Stores::Goodwill->value)
             ->with([
                 'urls.provider',
             ])->get();

@@ -30,27 +30,46 @@ abstract class Parser
 
     abstract public function getImageUrl(array $item): ?string;
 
-    public function fetchData(string $keyword): void
+    public function fetchData(): void
     {
-        try {
-            $this->data = Http::withoutVerifying()
-                ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                ])
-                ->get($this->url.urlencode($keyword))->json();
-        } catch (Throwable $e) {
-            dump('URL: '.$this->url.urlencode($keyword));
-            dump($e->getMessage());
-        }
+//        $keywords   = $this->getKeywords();
+
+//        foreach ($keywords as $key => $word) {
+//
+//            // Fetch Items
+//            $parser->fetchData($word['name']);
+//
+//            // Parse items
+//            $fetchedItems = $parser->getItems();
+//            $totalItems   += count($fetchedItems);
+//
+//            $text = 'Provider: ' . $url->provider->name . '; Store: ' . $this->store->name. ' Word: ' . $word['name'];
+//            // I don't want to fetch more products, that's why I commented this line.
+//            SaveFetchedProduct::dispatch($fetchedItems, $this->store->getId(), $word['category_id'], $word['parent_category_id'], $text);
+//
+//            SaveFetchedPrices::dispatch($fetchedItems, $this->store->getId(), $url->provider->getId());
+//        }
+//        try {
+//            $this->data = Http::withoutVerifying()
+//                ->withHeaders([
+//                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+//                ])
+//                ->get($this->url.urlencode($keyword))->json();
+//        } catch (Throwable $e) {
+//            dump('URL: '.$this->url.urlencode($keyword));
+//            dump($e->getMessage());
+//        }
     }
 
     public function generateResult(array $items): array
     {
         $result = [];
         foreach ($items as $item) {
-            // If we don't find the code we don't need product like that, because we can not identify it from different stores
+
+            // we don't need to save product if it does not have EAN standard (13 digits in bar code)
+            // we don't need to save product if we don't know its price
             $code = $this->getCode($item);
-            if (empty($code)) {
+            if (strlen((string)$code) != 13 || empty($this->getPrice($item))) {
                 continue;
             }
 
@@ -91,5 +110,40 @@ abstract class Parser
         preg_match('/"([^"]+)"/', $this->getName($item), $matches);
 
         return data_get($matches, 1, '');
+    }
+
+
+    private function getKeywords(): array
+    {
+        $categories  = [];
+
+        // Get all child category
+        $allCategory = Category::query()->whereNotNull('parent_id')->get();
+        $items       = CategoryTranslation::query()
+            ->where('language_id', Languages::Georgian->value)
+            ->whereIn('category_id', $allCategory->pluck('id')->toArray())
+            ->get();
+
+        // If there is a category like this "beer & vodka" I will fetch it separately as "beer" and "vodka"
+        foreach ($items as $item) {
+            if (str_contains($item->getName(), '&')) {
+                $arr = explode('&', $item->getName());
+                foreach ($arr as $k => $v) {
+                    $categories[] = [
+                        'name'               => trim($v),
+                        'category_id'        => $item->category_id,
+                        'parent_category_id' => $allCategory->firstWhere('id', $item->category_id)->parent_id,
+                    ];
+                }
+            } else {
+                $categories[] = [
+                    'name'               => $item->getName(),
+                    'category_id'        => $item->category_id,
+                    'parent_category_id' => $allCategory->firstWhere('id', $item->category_id)->parent_id,
+                ];
+            }
+        }
+
+        return $categories;
     }
 }
