@@ -95,6 +95,11 @@ class Product extends Model
         return $this->hasMany(ProductPrice::class, 'product_id')->where('active', true)->orderBy('price');
     }
 
+    public function codes(): HasMany
+    {
+        return $this->hasMany(BarCode::class, 'product_id');
+    }
+
     public function translation(): HasOne
     {
         return $this->hasOne(ProductTranslation::class, 'product_id')->where('language_id', Languages::Georgian->value);

@@ -63,7 +63,6 @@ abstract class Parser
                 tagName: $this->getTagName($item),
                 priceBeforeSale: $this->getPriceBeforeSale($item),
             );
-            dd($result);
         }
 
         return $result;

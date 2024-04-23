@@ -8,6 +8,7 @@ use App\DataTransferObjects\ProductDto;
 use App\Models\Product\Product;
 use App\Models\Product\ProductPrice;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -23,94 +24,93 @@ class SaveFetchedPrices implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(
-        private readonly array $items,
-        private readonly int $storeId,
-        private readonly int $providerId,
-    ) {
-    }
-
-    public function handle(): void
+    public static function process(array $items, int $storeId, int $providerId): void
     {
-        $productCodes = Arr::pluck($this->items, 'code');
-        $products     = $this->getProductByCode($productCodes);
+        $productCodes = Arr::pluck($items, 'code');
+        $products     = self::getProductByCode($productCodes);
 
         // I want to update prices only not deleted items
-        $items = collect($this->items)->whereIn('code', $products->pluck('code')->toArray());
+        $items = collect($items)->whereIn('code', $products->pluck('codes.*.code')->flatten()->toArray());
 
-        DB::transaction(function () use ($items, $products) {
+        DB::transaction(function () use ($items, $products, $storeId, $providerId) {
             $priceTable = (new ProductPrice())->getTable();
 
             /** @var \App\DataTransferObjects\ProductDto $item */
             foreach ($items as $item) {
-                $this->createPrice($item, $products->firstWhere('code', $item->code)->id, $priceTable);
+                self::createPrice($item, $products->firstWhere('code', $item->code)->id, $priceTable, $storeId, $providerId);
             }
         });
     }
 
-    private function getProductByCode(array $codes): Collection
+    private static function getProductByCode(array $codes): Collection
     {
-        return DB::table((new Product())->getTable())
-            ->select(['id', 'code', 'deleted_at'])
-            ->whereIn('code', $codes)
-            ->whereNull('deleted_at')
-            ->get();
+        return Product::query()
+           ->select(['id', 'deleted_at'])
+           ->whereHas('codes', function (Builder $query) use ($codes) {
+               $query->whereIn('code', $codes);
+           })
+           ->get();
     }
 
-    private function createPrice(ProductDto $item, int $id, string $priceTable): void
-    {
+    private static function createPrice(
+       ProductDto $item,
+       int $id,
+       string $priceTable,
+       int $storeId,
+       int $providerId
+    ): void {
 
         // If I have a week-old price in DB and that price is not updating I don't care about it anymore
         // maybe that product is already removed from the branch
         DB::table($priceTable)
-            ->where('product_id', $id)
-            ->where('created_at', '<=', now()->subWeek()->toDateString())
-            ->update([
-                'active' => false,
-            ]);
+           ->where('product_id', $id)
+           ->where('created_at', '<=', now()->subWeek()->toDateString())
+           ->update([
+              'active' => false,
+           ]);
 
         // If you have few urls for a store, you may already update price for the product but maybe this time you have fond much chipper price
         // sometimes some online providers have not updated prices
         $price = DB::table($priceTable)->select('price')
-            ->where('product_id', $id)
-            ->where('store_id', $this->storeId)
-            ->whereDate('created_at', today()->toDateString())
-            ->first()?->price;
+           ->where('product_id', $id)
+           ->where('store_id', $storeId)
+           ->whereDate('created_at', today()->toDateString())
+           ->first()?->price;
 
         if (
-            $price === null
-            ||
-            (
-                $price !== null &&
-                ($price ?? 0) > $item->price
-            )
+           $price === null
+           ||
+           (
+              $price !== null &&
+              ($price ?? 0) > $item->price
+           )
         ) {
             // Remove old price for today if it exists
             DB::table($priceTable)->select('price')
-                ->where('product_id', $id)
-                ->where('store_id', $this->storeId)
-                ->whereDate('created_at', today()->toDateString())
-                ->delete();
+               ->where('product_id', $id)
+               ->where('store_id', $storeId)
+               ->whereDate('created_at', today()->toDateString())
+               ->delete();
 
             // Disable all active prices, active field is necessary to fetch prices on a product much faster, also it makes query much logical
             DB::table($priceTable)
-                ->where('product_id', $id)
-                ->where('store_id', $this->storeId)
-                ->where('active', true)
-                ->update([
-                    'active' => false,
-                ]);
+               ->where('product_id', $id)
+               ->where('store_id', $storeId)
+               ->where('active', true)
+               ->update([
+                  'active' => false,
+               ]);
 
             // Set active to new price
             DB::table($priceTable)->insert([
-                'product_id'        => $id,
-                'price'             => $item->price,
-                'store_id'          => $this->storeId,
-                'provider_id'       => $this->providerId,
-                'created_at'        => now(),
-                'active'            => true,
-                'is_sale'           => $item->priceBeforeSale !== null && $item->price < $item->priceBeforeSale,
-                'price_before_sale' => $item->priceBeforeSale
+               'product_id'        => $id,
+               'price'             => $item->price,
+               'store_id'          => $storeId,
+               'provider_id'       => $providerId,
+               'created_at'        => now(),
+               'active'            => true,
+               'is_sale'           => $item->priceBeforeSale !== null && $item->price < $item->priceBeforeSale,
+               'price_before_sale' => $item->priceBeforeSale
             ]);
         }
     }

@@ -35,24 +35,24 @@ class StoreSeeder extends Seeder
               'name' => Stores::Goodwill->text(),
               'year' => 2004,
               'img'  => 'goodwill.png',
-              'urls' => [
-                 [
-                    'provider_id' => Providers::Wolt->value,
-                    'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/carrefour-saburtalo/menu/categories/slug/--131?unit_prices=true&show_weighted_items=true&show_subcategories=true'
-                 ]
-              ]
+//              'urls' => [
+//                 [
+//                    'provider_id' => Providers::Wolt->value,
+//                    'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/carrefour-saburtalo/menu/categories/slug/--131?unit_prices=true&show_weighted_items=true&show_subcategories=true'
+//                 ]
+//              ]
            ],
            [
               'id'   => Stores::Nikora->value,
               'name' => Stores::Nikora->text(),
               'img'  => 'nikora.jpg',
               'year' => 1998,
-              'urls' => [
-                 [
-                    'provider_id' => Providers::Glovo->value,
-                    'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/carrefour-saburtalo/menu/categories/slug/--131?unit_prices=true&show_weighted_items=true&show_subcategories=true'
-                 ]
-              ]
+//              'urls' => [
+//                 [
+//                    'provider_id' => Providers::Glovo->value,
+//                    'url'         => 'https://restaurant-api.wolt.com/v4/venues/slug/carrefour-saburtalo/menu/categories/slug/--131?unit_prices=true&show_weighted_items=true&show_subcategories=true'
+//                 ]
+//              ]
            ],
            [
               'id'   => Stores::Spar->value,
@@ -83,12 +83,12 @@ class StoreSeeder extends Seeder
               'name' => Stores::OriNabiji->text(),
               'year' => 2010,
               'img'  => 'orinabiji.png',
-              'urls' => [
-                 [
-                    'provider_id' => Providers::OriNabiji->value,
-                    'url'         => 'https://catalog-api.orinabiji.ge/catalog/api/products/suggestions?lang=ge&limit=100&sortField=isInStock&sortDirection=-1&searchText='
-                 ]
-              ]
+//              'urls' => [
+//                 [
+//                    'provider_id' => Providers::OriNabiji->value,
+//                    'url'         => 'https://catalog-api.orinabiji.ge/catalog/api/products/suggestions?lang=ge&limit=100&sortField=isInStock&sortDirection=-1&searchText='
+//                 ]
+//              ]
            ],
         ];
 

@@ -36,11 +36,10 @@ class ParseStoreProducts implements ShouldQueue
             $parser = resolve($provider->getClass(), ['url' => $url['url']]);
 
             $fetchedItems = $parser->processData();
-            dd($fetchedItems);
 
-//            SaveFetchedProduct::dispatch($fetchedItems, $url['store_id']);
-//
-//            SaveFetchedPrices::dispatch($fetchedItems, $url['store_id'], $this->providerId);
+            SaveFetchedProduct::process($fetchedItems, $url['store_id']);
+
+            SaveFetchedPrices::process($fetchedItems, $url['store_id'], $this->providerId);
         }
     }
 }

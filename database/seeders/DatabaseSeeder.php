@@ -13,8 +13,7 @@ class DatabaseSeeder extends Seeder
            ProviderSeeder::class,
            StoreSeeder::class,
            CategorySeeder::class,
-            //            TagSeeder::class
-            //            TagSeeder::class,
+           TagSeeder::class
         ]);
     }
 }

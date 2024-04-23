@@ -9,10 +9,12 @@ use App\Enums\Languages;
 use App\Enums\TagType;
 use App\Models\Company;
 use App\Models\File;
+use App\Models\Product\BarCode;
 use App\Models\Product\Product;
 use App\Models\Product\ProductTranslation;
 use App\Models\Tag\Tag;
 use App\Models\Tag\TagTranslation;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -21,74 +23,74 @@ use Throwable;
 
 class SaveFetchedProduct
 {
-    public function __construct(
-        private readonly array $items,
-        private readonly int $storeId,
-    ) {
-    }
-
-    public function handle(): void
+    public static function process(array $items, int $storeId): void
     {
         // Fetch products that I have saved with same barCode
         // So I can prevent duplicate products in my DB
-        $productCodes = Arr::pluck($this->items, 'code');
-        $products     = $this->getProductByCode($productCodes);
+        $productCodes = Arr::pluck($items, 'code');
+        $products     = self::getProductByCode($productCodes);
 
         // Generate list for process, so here will be only new products that I don't have in my DB
-        $items = collect($this->items)->whereNotIn('code', $products->pluck('code')->toArray());
+        $items = collect($items)->whereNotIn('code', $products->pluck('codes.*.code')->flatten()->toArray());
 
         DB::transaction(function () use ($items) {
             /** @var \App\DataTransferObjects\ProductDto $item */
             foreach ($items as $item) {
-                $productId = $this->createProduct($item);
+                $productId = self::createProduct($item);
 
-                if (!empty($item->imageUrl)) {
-                    $this->downloadImage($productId, $item->code, $item->imageUrl);
+                if ( ! empty($item->imageUrl)) {
+                    self::downloadImage($productId, $item->code, $item->imageUrl);
                 }
             }
         });
     }
 
-    private function getProductByCode(array $codes): Collection
+    private static function getProductByCode(array $codes): Collection
     {
-        return DB::table((new Product())->getTable())
-            ->select(['id', 'code', 'deleted_at'])
-            ->whereIn('code', $codes)
-            ->get();
+        return Product::withTrashed()
+           ->select(['id', 'deleted_at'])
+           ->whereHas('codes', function (Builder $query) use ($codes) {
+               $query->whereIn('code', $codes);
+           })
+           ->get();
     }
 
-    private function createProduct(ProductDto $item): int
+    private static function createProduct(ProductDto $item): int
     {
         $productId = DB::table((new Product())->getTable())
-            ->insertGetId([
-                'code' => $item->code,
-            ]);
+           ->insertGetId([]);
 
-        $this->createTranslations($productId, $item->name);
-        $this->createCompany($productId, $item->companyName);
-        $this->createTag($productId, $item->tag, $item->tagName);
+        DB::table((new BarCode())->getTable())
+           ->insert([
+              'product_id' => $productId,
+              'code'       => $item->code
+           ]);
+
+        self::createTranslations($productId, $item->name);
+        self::createCompany($productId, $item->companyName);
+        self::createTag($productId, $item->tag, $item->tagName);
 
         return $productId;
     }
 
-    private function createTranslations(int $productId, string $name): void
+    private static function createTranslations(int $productId, string $name): void
     {
         // At this time I don't care about translations I will edit this little late
         DB::table((new ProductTranslation())->getTable())
-            ->insert([
-                'product_id'  => $productId,
-                'language_id' => Languages::Georgian->value,
-                'name'        => $name,
-            ]);
+           ->insert([
+              'product_id'  => $productId,
+              'language_id' => Languages::Georgian->value,
+              'name'        => $name,
+           ]);
     }
 
-    private function createTag(
-        int $productId,
-        ?string $tag,
-        ?string $tagName,
+    private static function createTag(
+       int $productId,
+       ?string $tag,
+       ?string $tagName,
     ): void {
 
-        if (!empty($tag) && !empty($tagName)) {
+        if ( ! empty($tag) && ! empty($tagName)) {
             if ($tagName === 'გ') {
                 $tagName = 'გრ';
             } elseif (in_array($tagName, ['ლ', 'კგ'], true) && floatval($tag) < 1) {
@@ -116,29 +118,29 @@ class SaveFetchedProduct
                 }
 
                 $tagId = DB::table((new Tag())->getTable())->insertGetId([
-                    'type'      => $type->value,
-                    'parent_id' => $type->value,
+                   'type'      => $type->value,
+                   'parent_id' => $type->value,
                 ]);
 
                 DB::table((new TagTranslation())->getTable())
-                    ->insert([
-                        'tag_id'      => $tagId,
-                        'language_id' => Languages::Georgian->value,
-                        'name'        => $tag.' '.$tagName,
-                    ]);
+                   ->insert([
+                      'tag_id'      => $tagId,
+                      'language_id' => Languages::Georgian->value,
+                      'name'        => $tag.' '.$tagName,
+                   ]);
             }
 
             DB::table((new Product())->tags()->getTable())
-                ->insert([
-                    'product_id' => $productId,
-                    'tag_id'     => $tagId,
-                ]);
+               ->insert([
+                  'product_id' => $productId,
+                  'tag_id'     => $tagId,
+               ]);
         }
     }
 
-    private function createCompany(
-        int $productId,
-        ?string $companyName = null,
+    private static function createCompany(
+       int $productId,
+       ?string $companyName = null,
     ): void {
         // I will create company with any random name to save time while validate data
         if ($companyName) {
@@ -150,17 +152,17 @@ class SaveFetchedProduct
 
             if ($companyId) {
                 DB::table((new Product())->getTable())->where('id', $productId)
-                    ->update([
-                        'company_id' => $companyId,
-                    ]);
+                   ->update([
+                      'company_id' => $companyId,
+                   ]);
             }
         }
     }
 
-    private function downloadImage(
-        int $productId,
-        int $code,
-        string $url,
+    private static function downloadImage(
+       int $productId,
+       int $code,
+       string $url,
     ): void {
         if (empty($url)) {
             return;
@@ -191,12 +193,12 @@ class SaveFetchedProduct
                     $diskUrl = Storage::disk('public')->path('products'.'/'.$filename);
 
                     $data = [
-                        'name'          => $filename,
-                        'path'          => 'products'.'/'.$filename,
-                        'size'          => filesize($diskUrl),
-                        'extension'     => $extension,
-                        'fileable_id'   => $productId,
-                        'fileable_type' => Product::class,
+                       'name'          => $filename,
+                       'path'          => 'products'.'/'.$filename,
+                       'size'          => filesize($diskUrl),
+                       'extension'     => $extension,
+                       'fileable_id'   => $productId,
+                       'fileable_type' => Product::class,
                     ];
 
                     DB::table((new File())->getTable())->insert($data);
