@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Jobs;
+namespace App\Actions;
 
 use App\DataTransferObjects\ProductDto;
 use App\Enums\Languages;
@@ -13,24 +13,14 @@ use App\Models\Product\Product;
 use App\Models\Product\ProductTranslation;
 use App\Models\Tag\Tag;
 use App\Models\Tag\TagTranslation;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
-class SaveFetchedProduct implements ShouldQueue
+class SaveFetchedProduct
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
     public function __construct(
         private readonly array $items,
         private readonly int $storeId,

@@ -9,6 +9,7 @@ use App\Jobs\ParseStoreProducts;
 use App\Models\Store;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
 
 class FetchData extends Command
 {
@@ -18,22 +19,38 @@ class FetchData extends Command
 
     public function handle(): void
     {
-        $stores = $this->getStores();
+        $stores    = $this->getStores();
+        $providers = [];
 
-        // Start fetching data from the stores
-        // Making it as job give as ability to run processes on parallel
+        // Generate Urls
         /** @var \App\Models\Store $store */
         foreach ($stores as $store) {
-            dispatch(new ParseStoreProducts($store));
+            foreach ($store->urls->groupBy('provider_id') as $providerId => $url) {
+                $providers[$providerId] = [
+                   ...Arr::get($providers, $providerId, []),
+                   ...$url->pluck('url')->transform(function ($item) use ($store) {
+                       return [
+                          'url'      => $item,
+                          'store_id' => $store->id
+                       ];
+                   })
+                ];
+            }
+        }
+
+        // Start Fetching Data
+        foreach ($providers as $providerId => $provider) {
+            foreach (array_chunk($provider, 20) as $key => $data) {
+                dispatch(new ParseStoreProducts($providerId, $data))->delay(now()->addSeconds(80 * $key));
+            }
         }
     }
 
     private function getStores(): Collection
     {
         return Store::query()
-            ->where('id', Stores::Goodwill->value)
-            ->with([
-                'urls.provider',
-            ])->get();
+           ->with([
+              'urls.provider',
+           ])->get();
     }
 }

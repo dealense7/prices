@@ -42,11 +42,6 @@ class Url extends Model
         return $this->url;
     }
 
-    public function resolveProvider(): Parser
-    {
-        return resolve($this->provider->getClass(), ['url' => $this->getUrl()]);
-    }
-
     public function provider(): BelongsTo
     {
         return $this->belongsTo(Provider::class, 'provider_id');

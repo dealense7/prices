@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Parsers\WoltParser;
+
 enum Providers: int
 {
     case Glovo     = 1;
@@ -18,6 +20,18 @@ enum Providers: int
             Providers::Glovo     => 'Glovo',
             Providers::OriNabiji => 'OriNabiji',
             Providers::Wolt      => 'Wolt',
+            Providers::Goodwill  => 'Goodwill',
+            Providers::Spar      => 'Spar',
+        };
+    }
+
+    public function getClass(): string
+    {
+
+        return match ($this) {
+            Providers::Glovo     => 'Glovo',
+            Providers::OriNabiji => 'OriNabiji',
+            Providers::Wolt      => WoltParser::class,
             Providers::Goodwill  => 'Goodwill',
             Providers::Spar      => 'Spar',
         };

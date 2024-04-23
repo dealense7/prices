@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Jobs\SaveFetchedProduct;
+use App\Actions\SaveFetchedProduct;
 use App\Models\Category\Category;
 use App\Models\Language;
 use App\Parsers\OriNabijiParser;
