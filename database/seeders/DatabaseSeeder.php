@@ -10,10 +10,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             LanguageSeeder::class,
+            CategorySeeder::class,
 //            TagSeeder::class,
-            ProviderSeeder::class,
-            StoreSeeder::class,
-//            CategorySeeder::class,
+//            ProviderSeeder::class,
+//            StoreSeeder::class,
 //            TagSeeder::class
         ]);
     }

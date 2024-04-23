@@ -39,13 +39,13 @@ class SaveFetchedProduct implements ShouldQueue
 
     public function handle(): void
     {
-        // Fetch products that I have saved with same bar code
+        // Fetch products that I have saved with same barCode
         // So I can prevent duplicate products in my DB
         $productCodes = Arr::pluck($this->items, 'code');
         $products     = $this->getProductByCode($productCodes);
 
+        // Generate list for process, so here will be only new products that I don't have in my DB
         $items = collect($this->items)->whereNotIn('code', $products->pluck('code')->toArray());
-
 
         DB::transaction(function () use ($items) {
             /** @var \App\DataTransferObjects\ProductDto $item */

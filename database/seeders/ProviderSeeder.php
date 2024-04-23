@@ -35,6 +35,11 @@ class ProviderSeeder extends Seeder
                 'id'    => Providers::Goodwill->value,
                 'name'  => Providers::Goodwill->text(),
                 'class' => GoodwillParser::class
+            ],
+            [
+                'id'    => Providers::Spar->value,
+                'name'  => Providers::Spar->text(),
+                'class' => GoodwillParser::class
             ]
         ];
 

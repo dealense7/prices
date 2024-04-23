@@ -43,13 +43,11 @@ class CategoryRepository extends Repository implements CategoryRepositoryContrac
         $items = $this->getData($filters)
             ->with([
                 'translation',
-                'children' => static function ($query) {
-                    $query->with('translation')->whereHas('products', static function ($query) {
-                        $query->where('show', true);
-                });
-                },
+                'children.translation'
             ])
-            ->whereNull('parent_id')->get();
+            ->whereNull('parent_id')
+            ->orderBy('id')
+            ->get();
 
         return $items;
     }

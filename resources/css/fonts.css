@@ -23,7 +23,15 @@
     font-family: bold;
 }
 
+.hover\:font-bold:hover{
+    font-family: bold
+}
+
 .font-medium{
+    font-family: medium;
+}
+
+.hover\:font-medium:hover{
     font-family: medium;
 }
 

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->string('icon_path');
+            $table->string('icon_path')->nullable();
         });
     }
 
