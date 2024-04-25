@@ -33,7 +33,7 @@ class ParseStoreProducts implements ShouldQueue
 
         foreach ($this->data as $url) {
             /** @var Parser $parser */
-            $parser = resolve($provider->getClass(), ['url' => $url['url']]);
+            $parser = resolve($provider->getClass(), ['url' => $url['url'], 'storeId' => $url['store_id']]);
 
             $fetchedItems = $parser->processData();
 

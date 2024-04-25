@@ -76,18 +76,18 @@ class ProductRepository implements ProductRepositoryContract
     {
 
         $items = Category::query()
-            ->whereHas('allProducts', static function ($query) {
-                $query->where('show', true);
-            })
+//            ->whereHas('allProducts', static function ($query) {
+//                $query->where('show', true);
+//            })
             ->whereNull('parent_id')
             ->withCount([
                 'allProducts' => static function ($query) {
-                    $query->where('show', true);
+//                    $query->where('show', true);
                 },
             ])
             ->with('translation')
             ->inRandomOrder()
-            ->limit(4)
+//            ->limit(4)
             ->has('allProducts', '>=', 14)
             ->get()
             ->each(static function ($item) {
@@ -95,7 +95,7 @@ class ProductRepository implements ProductRepositoryContract
                     'allProducts' => static function ($query) {
                         $query
                             ->select('id')
-                            ->where('show', true)
+//                            ->where('show', true)
                             ->orderByRaw('(SELECT MAX(price) - MIN(price) FROM product_prices WHERE product_id = products.id AND created_at > "' . now()->subDay()->toDateString() . '") DESC')
                             ->take(14);
                     },

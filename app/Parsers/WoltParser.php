@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Parsers;
 
+use App\Enums\Stores;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 
@@ -18,9 +19,15 @@ class WoltParser extends Parser
 
     public function fetchData(): void
     {
-        $response = Http::get($this->url);
+        $response = Http::withoutVerifying()->get($this->url);
 
         $this->data = $response->json();
+    }
+
+    public function getCategoryId(array $item): ?int
+    {
+        $mapper = config('custom.category-maper.' . strtolower(Stores::from($this->storeId)->name). '-wolt');
+        return Arr::get($mapper, Arr::get($item, 'category'));
     }
 
 

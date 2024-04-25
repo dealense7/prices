@@ -24,20 +24,27 @@ class SaveFetchedPrices implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public static function process(array $items, int $storeId, int $providerId): void
+    public static function  process(array $items, int $storeId, int $providerId): void
     {
         $productCodes = Arr::pluck($items, 'code');
         $products     = self::getProductByCode($productCodes);
+        $productCodes = $products->pluck('codes.*.code')->flatten()->toArray();
+        $products = $products->transform(function ($item){
+            return [
+                'id' => $item->id,
+                'code' => $item->codes->first()->code,
+            ];
+        })->pluck('id', 'code')->toArray();
 
         // I want to update prices only not deleted items
-        $items = collect($items)->whereIn('code', $products->pluck('codes.*.code')->flatten()->toArray());
+        $items = collect($items)->whereIn('code', $productCodes);
 
-        DB::transaction(function () use ($items, $products, $storeId, $providerId) {
+        DB::transaction(function () use ($items, $storeId, $providerId, $products) {
             $priceTable = (new ProductPrice())->getTable();
 
             /** @var \App\DataTransferObjects\ProductDto $item */
             foreach ($items as $item) {
-                self::createPrice($item, $products->firstWhere('code', $item->code)->id, $priceTable, $storeId, $providerId);
+                self::createPrice($item, $products[$item->code], $priceTable, $storeId, $providerId);
             }
         });
     }
@@ -45,7 +52,6 @@ class SaveFetchedPrices implements ShouldQueue
     private static function getProductByCode(array $codes): Collection
     {
         return Product::query()
-           ->select(['id', 'deleted_at'])
            ->whereHas('codes', function (Builder $query) use ($codes) {
                $query->whereIn('code', $codes);
            })

@@ -6,21 +6,21 @@ use App\Enums\Languages;
 
 enum SubCategory: int
 {
-    case BREAD_WHITE           = 1;
-    case BREAD_DARK_REY        = 2;
-    case FRUIT                 = 3;
-    case VEGETABLE             = 4;
-    case HERB                  = 5;
-    case DAIRY_MILK            = 6;
-    case DAIRY_EGG             = 7;
-    case DAIRY_CHEESE          = 8;
-    case DAIRY_YOGURT          = 9;
-    case DAIRY_BUTTER          = 10;
-    case DAIRY_SOUR_CREAM      = 11;
-    case GROCERY_GRAIN         = 12;
-    case GROCERY_SUGAR         = 13;
-    case GROCERY_SAUCE         = 14;
-    case GROCERY_OIL           = 15;
+    case BREAD_WHITE           = 41;
+    case BREAD_DARK_REY        = 8;
+    case FRUIT                 = 9;
+    case VEGETABLE             = 10;
+    case HERB                  = 11;
+    case DAIRY_MILK            = 12;
+    case DAIRY_EGG             = 13;
+    case DAIRY_CHEESE          = 14;
+    case DAIRY_YOGURT          = 15;
+    case DAIRY_BUTTER          = 34;
+    case DAIRY_SOUR_CREAM      = 35;
+    case GROCERY_GRAIN         = 36;
+    case GROCERY_SUGAR         = 37;
+    case GROCERY_SAUCE         = 38;
+    case GROCERY_OIL           = 39;
     case GROCERY_CANNED_FOOD   = 16;
     case GROCERY_PASTA         = 17;
     case GROCERY_HONEY         = 18;
@@ -30,14 +30,15 @@ enum SubCategory: int
     case BEEF                  = 22;
     case FISH                  = 23;
     case COLD_DRINK            = 24;
-    case JUICE                 = 25;
-    case ENERGY_DRINK          = 26;
-    case TEA_AND_COFFEE        = 27;
-    case WINE                  = 28;
-    case BEER                  = 29;
-    case VODKA                 = 30;
-    case WHISKEY               = 31;
-    case OTHER_ALCOHOL         = 32;
+    case WATER                 = 25;
+    case JUICE                 = 26;
+    case ENERGY_DRINK          = 27;
+    case TEA_AND_COFFEE        = 28;
+    case WINE                  = 29;
+    case BEER                  = 30;
+    case VODKA                 = 31;
+    case WHISKEY               = 32;
+    case OTHER_ALCOHOL         = 33;
 
     public function getData(): array
     {
@@ -167,11 +168,11 @@ enum SubCategory: int
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'მაწონი, არაჟანი, ხაჭო'
+                    'name'        => 'მარცვლეული, ბურღულეული'
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Matsoni, Sour Cream, Cottage cheese'
+                    'name'        => 'Grain, Cereal'
                 ]
             ],
             SubCategory::GROCERY_SUGAR => [
@@ -304,6 +305,17 @@ enum SubCategory: int
                 [
                     'language_id' => Languages::English->value,
                     'name'        => 'Cold Drinks'
+                ]
+            ],
+            SubCategory::WATER => [
+                'parent_id' => Category::NON_ALCOHOLIC_DRINKS->value,
+                [
+                    'language_id' => Languages::Georgian->value,
+                    'name'        => 'წყალი'
+                ],
+                [
+                    'language_id' => Languages::English->value,
+                    'name'        => 'Water'
                 ]
             ],
             SubCategory::JUICE => [

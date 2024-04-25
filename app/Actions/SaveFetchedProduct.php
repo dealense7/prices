@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\DataTransferObjects\ProductDto;
+use App\Enums\Category\SubCategory;
 use App\Enums\Languages;
 use App\Enums\TagType;
 use App\Models\Company;
@@ -38,7 +39,7 @@ class SaveFetchedProduct
             foreach ($items as $item) {
                 $productId = self::createProduct($item);
 
-                if ( ! empty($item->imageUrl)) {
+                if (!empty($item->imageUrl)) {
                     self::downloadImage($productId, $item->code, $item->imageUrl);
                 }
             }
@@ -48,49 +49,65 @@ class SaveFetchedProduct
     private static function getProductByCode(array $codes): Collection
     {
         return Product::withTrashed()
-           ->select(['id', 'deleted_at'])
-           ->whereHas('codes', function (Builder $query) use ($codes) {
-               $query->whereIn('code', $codes);
-           })
-           ->get();
+            ->select(['id', 'deleted_at'])
+            ->with(['codes'])
+            ->whereHas('codes', function (Builder $query) use ($codes) {
+                $query->whereIn('code', $codes);
+            })
+            ->get();
     }
 
     private static function createProduct(ProductDto $item): int
     {
         $productId = DB::table((new Product())->getTable())
-           ->insertGetId([]);
+            ->insertGetId([]);
 
         DB::table((new BarCode())->getTable())
-           ->insert([
-              'product_id' => $productId,
-              'code'       => $item->code
-           ]);
+            ->insert([
+                'product_id' => $productId,
+                'code'       => $item->code
+            ]);
 
         self::createTranslations($productId, $item->name);
         self::createCompany($productId, $item->companyName);
         self::createTag($productId, $item->tag, $item->tagName);
+        self::createCategory($productId, $item->categoryId);
 
         return $productId;
+    }
+
+    private static function createCategory(int $productId, ?int $categoryId): void
+    {
+        if ($categoryId) {
+
+            $category = SubCategory::from($categoryId);
+            DB::table((new Product())->categories()->getTable())
+                ->insert([
+                    'product_id'         => $productId,
+                    'category_id'        => $categoryId,
+                    'parent_category_id' => $category->getData()['parent_id'],
+                ]);
+        }
     }
 
     private static function createTranslations(int $productId, string $name): void
     {
         // At this time I don't care about translations I will edit this little late
         DB::table((new ProductTranslation())->getTable())
-           ->insert([
-              'product_id'  => $productId,
-              'language_id' => Languages::Georgian->value,
-              'name'        => $name,
-           ]);
+            ->insert([
+                'product_id'  => $productId,
+                'language_id' => Languages::Georgian->value,
+                'name'        => $name,
+            ]);
     }
 
     private static function createTag(
-       int $productId,
-       ?string $tag,
-       ?string $tagName,
+        int $productId,
+        ?string $tag,
+        ?string $tagName,
     ): void {
 
-        if ( ! empty($tag) && ! empty($tagName)) {
+        if (!empty($tag) && !empty($tagName)) {
             if ($tagName === 'გ') {
                 $tagName = 'გრ';
             } elseif (in_array($tagName, ['ლ', 'კგ'], true) && floatval($tag) < 1) {
@@ -118,29 +135,29 @@ class SaveFetchedProduct
                 }
 
                 $tagId = DB::table((new Tag())->getTable())->insertGetId([
-                   'type'      => $type->value,
-                   'parent_id' => $type->value,
+                    'type'      => $type->value,
+                    'parent_id' => $type->value,
                 ]);
 
                 DB::table((new TagTranslation())->getTable())
-                   ->insert([
-                      'tag_id'      => $tagId,
-                      'language_id' => Languages::Georgian->value,
-                      'name'        => $tag.' '.$tagName,
-                   ]);
+                    ->insert([
+                        'tag_id'      => $tagId,
+                        'language_id' => Languages::Georgian->value,
+                        'name'        => $tag.' '.$tagName,
+                    ]);
             }
 
             DB::table((new Product())->tags()->getTable())
-               ->insert([
-                  'product_id' => $productId,
-                  'tag_id'     => $tagId,
-               ]);
+                ->insert([
+                    'product_id' => $productId,
+                    'tag_id'     => $tagId,
+                ]);
         }
     }
 
     private static function createCompany(
-       int $productId,
-       ?string $companyName = null,
+        int $productId,
+        ?string $companyName = null,
     ): void {
         // I will create company with any random name to save time while validate data
         if ($companyName) {
@@ -152,17 +169,17 @@ class SaveFetchedProduct
 
             if ($companyId) {
                 DB::table((new Product())->getTable())->where('id', $productId)
-                   ->update([
-                      'company_id' => $companyId,
-                   ]);
+                    ->update([
+                        'company_id' => $companyId,
+                    ]);
             }
         }
     }
 
     private static function downloadImage(
-       int $productId,
-       int $code,
-       string $url,
+        int $productId,
+        int $code,
+        string $url,
     ): void {
         if (empty($url)) {
             return;
@@ -193,12 +210,12 @@ class SaveFetchedProduct
                     $diskUrl = Storage::disk('public')->path('products'.'/'.$filename);
 
                     $data = [
-                       'name'          => $filename,
-                       'path'          => 'products'.'/'.$filename,
-                       'size'          => filesize($diskUrl),
-                       'extension'     => $extension,
-                       'fileable_id'   => $productId,
-                       'fileable_type' => Product::class,
+                        'name'          => $filename,
+                        'path'          => 'products'.'/'.$filename,
+                        'size'          => filesize($diskUrl),
+                        'extension'     => $extension,
+                        'fileable_id'   => $productId,
+                        'fileable_type' => Product::class,
                     ];
 
                     DB::table((new File())->getTable())->insert($data);

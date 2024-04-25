@@ -49,6 +49,7 @@ class CategorySeeder extends Seeder
             SubCategory::FISH,
             SubCategory::COLD_DRINK,
             SubCategory::JUICE,
+            SubCategory::WATER,
             SubCategory::ENERGY_DRINK,
             SubCategory::TEA_AND_COFFEE,
             SubCategory::WINE,
@@ -78,6 +79,7 @@ class CategorySeeder extends Seeder
             /** @var CategoryModel $item */
             $item = CategoryModel::query()->firstOrCreate(
                 [
+                    'id'        => $category->value,
                     'parent_id' => $category->getData()['parent_id'],
                     'slug'      => Str::slug($category->name)
                 ]
@@ -91,3 +93,15 @@ class CategorySeeder extends Seeder
         }
     }
 }
+
+
+ბეილისი ლიქიორი 0.7 ლ
+შერიდანი ლიქიორი 0.7 ლ
+კამპარი ლიქიორი 12წ 1ლ
+GOMI ლიქიორი ბლის 0.5ლ
+ჯეკ დანიელსის თაფლის ლიქიორი 0.7 ლ 35% Vol
+
+
+
+
+

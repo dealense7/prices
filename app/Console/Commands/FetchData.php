@@ -22,7 +22,8 @@ class FetchData extends Command
         $stores    = $this->getStores();
         $providers = [];
 
-        // Generate Urls
+        // Generate Urls and group by provider
+        // So we can delay 20-30 requests for a provider, that will help us on too many request problem
         /** @var \App\Models\Store $store */
         foreach ($stores as $store) {
             foreach ($store->urls->groupBy('provider_id') as $providerId => $url) {
@@ -38,7 +39,7 @@ class FetchData extends Command
             }
         }
 
-        // Start Fetching Data
+        // Start Fetching Data and delaying requests
         foreach ($providers as $providerId => $provider) {
             foreach (array_chunk($provider, 20) as $key => $data) {
                 dispatch(new ParseStoreProducts($providerId, $data))->delay(now()->addSeconds(80 * $key));
@@ -49,6 +50,7 @@ class FetchData extends Command
     private function getStores(): Collection
     {
         return Store::query()
+            ->where('id', Stores::Carrefour->value)
            ->with([
               'urls.provider',
            ])->get();

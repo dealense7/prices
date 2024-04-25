@@ -13,7 +13,7 @@ class ProductDto
         public readonly string $currencyCode,
         public readonly ?string $imageUrl = null,
         public readonly ?string $companyName = null,
-        public readonly ?string $categoryId = null,
+        public readonly ?int $categoryId = null,
         public readonly ?string $tag = null,
         public readonly ?string $tagName = null,
         public readonly ?int $priceBeforeSale = null,

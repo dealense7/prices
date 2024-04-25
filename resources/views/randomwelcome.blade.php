@@ -32,7 +32,8 @@
 
                 <div class="sm:col-span-2 md:col-span-3 lg:col-span-5 xl:col-span-7 flex items-center justify-between">
                     <h3 class="font-bold text-xl">{{$category->name}}</h3>
-                    <a href="items?filters[parentCategoryIds][]={{$category->id}}" class="flex flex-col items-end font-normal text-xs">
+                    <a href="items?filters[parentCategoryIds][]={{$category->id}}"
+                       class="flex flex-col items-end font-normal text-xs">
                         <small>ყველას ნახვა</small>
                         <small class="text-[9px]">სულ: {{$category->all_products_count}}</small>
                     </a>
@@ -40,9 +41,10 @@
 
                 @foreach($category->allProducts as $product)
 
-                    <x-list.item :product="$product" />
+                    <x-list.item :product="$product"/>
                 @endforeach
             </div>
         @endforeach
-        <x-list.modal />
+        <x-list.modal/>
     </div>
+</div>
