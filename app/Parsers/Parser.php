@@ -24,6 +24,7 @@ abstract class Parser
 
     // We need barCode to identify same product from different stores
     abstract public function getCode(array $item): int;
+
     abstract public function getCategoryId(array $item): ?int;
 
     abstract public function getPrice(array $item): int;
@@ -46,12 +47,11 @@ abstract class Parser
     {
         $result = [];
         foreach ($items as $item) {
-
             // we don't need to save product if it does not have EAN standard (13 digits in bar code)
             // we don't need to save product if we don't know its price
-            $code = $this->getCode($item);
+            $code       = $this->getCode($item);
             $categoryId = $this->getCategoryId($item);
-            if (strlen((string) $code) != 13 || empty($this->getPrice($item)) || $categoryId === null) {
+            if (!in_array(strlen((string) $code), [13, 7]) || empty($this->getPrice($item)) || $categoryId === null) {
                 continue;
             }
 

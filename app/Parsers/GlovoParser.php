@@ -11,7 +11,13 @@ class GlovoParser extends Parser
 {
     public function getItems(): array
     {
-        $items = Arr::get($this->data, 'data.body.0.data.elements', []);
+        $items = [];
+        foreach (Arr::get($this->data, 'data.body', []) as $data) {
+            $items = [
+                ...$items,
+                ...Arr::get($data, 'data.elements', [])
+            ];
+        }
 
         return $this->generateResult($items);
     }
@@ -54,8 +60,11 @@ class GlovoParser extends Parser
 
     public function getCategoryId(array $item): ?int
     {
-        preg_match('/(\d+)$/', $this->url, $matches);
-        $lastNumber = end($matches);
+        parse_str(parse_url($this->url, PHP_URL_QUERY), $queryParams);
+
+        $categoryId = Arr::get($queryParams, 'categoryId');
+
+        return $categoryId !== null ? (int) $categoryId : null;
     }
 
     public function getCode(array $item): int
@@ -74,7 +83,7 @@ class GlovoParser extends Parser
         if (
             $code === 0
         ) {
-            preg_match('/\b\d{13}\b/', data_get($item, 'imageUrl'), $matches);
+            preg_match('/\b\d{13}\b/', $this->getImageUrl($item), $matches);
             $code = data_get($matches, 0, 0);
         }
 
@@ -103,16 +112,17 @@ class GlovoParser extends Parser
     public function getPrice(array $item): int
     {
         $promotion = Arr::get($item, 'data.promotion');
+
         if (!empty($promotion)) {
-            return intval(round($promotion['price'], 3) * 100);
+            return intval(round(Arr::get($promotion, 'priceInfo.amount'), 3) * 100);
         }
 
-        return intval(round($item['priceInfo']['amount'], 3) * 100);
+        return intval(round(Arr::get($item, 'data.priceInfo.amount'), 3) * 100);
     }
 
     public function getPriceBeforeSale(array $item): ?int
     {
-        $promotion = Arr::get($item, 'promotion');
+        $promotion = Arr::get($item, 'data.promotion');
 
         if (!empty($promotion)) {
             return intval(round($item['data']['priceInfo']['amount'], 3) * 100);
@@ -128,6 +138,6 @@ class GlovoParser extends Parser
 
     public function getImageUrl(array $item): ?string
     {
-        return data_get($item['data'], 'imageUrl');
+        return Arr::get($item, 'data.imageUrl');
     }
 }

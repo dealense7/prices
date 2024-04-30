@@ -36,8 +36,8 @@ class ParseStoreProducts implements ShouldQueue
             $parser = resolve($provider->getClass(), ['url' => $url['url'], 'storeId' => $url['store_id']]);
 
             $fetchedItems = $parser->processData();
-
-            SaveFetchedProduct::process($fetchedItems, $url['store_id']);
+// I don't want to add more products so that;s why I comment this part
+//            SaveFetchedProduct::process($fetchedItems, $url['store_id']);
 
             SaveFetchedPrices::process($fetchedItems, $url['store_id'], $this->providerId);
         }

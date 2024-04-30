@@ -38,8 +38,6 @@
                 </div>
             </div>
 
-
-
             <div x-data="{
             open:false,
             title: '',
@@ -93,3 +91,4 @@
     </div>
 
 @endsection
+

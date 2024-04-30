@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class GoodwillParser extends Parser
 {
+    public static string $token;
 
     private function getToken(): ?string
     {
@@ -52,21 +53,15 @@ class GoodwillParser extends Parser
 
     public function fetchData(): void
     {
-        $token = $this->getToken();
-
-        if ($token != null) {
-            for ($i = 1; $i < 15; $i++) {
-                $data = Http::withHeaders([
-                    'Authorization' => 'Bearer '.$token,
-                ])->withoutVerifying()->get('https://api.goodwill.ge/v1/Products/v3?ShopId=1&Page='.$i.'&Limit=500');
-
-                $this->data = [
-                    ...Arr::get($data->json(), 'products', []),
-                    ...$this->data
-                ];
-            }
-
+        if (empty(static::$token)) {
+            static::$token = $this->getToken();
         }
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer '.static::$token,
+        ])->withoutVerifying()->get($this->url);
+
+        $this->data = $response->json();
     }
 
     public function getName(array $item): string
@@ -76,7 +71,7 @@ class GoodwillParser extends Parser
 
     public function getItems(): array
     {
-        $items = $this->data;
+        $items = Arr::get($this->data, 'products', []);
 
         return $this->generateResult($items);
     }
@@ -88,7 +83,7 @@ class GoodwillParser extends Parser
 
     public function getPrice(array $item): int
     {
-        return (int) Arr::get($item, 'price', 0);
+        return (int) (Arr::get($item, 'price', 0) * 100);
     }
 
     public function getPriceBeforeSale(array $item): ?int
@@ -104,5 +99,11 @@ class GoodwillParser extends Parser
     public function getImageUrl(array $item): ?string
     {
         return Arr::get($item, 'imageUrl');
+    }
+
+    public function getCategoryId(array $item): ?int
+    {
+        $mapper = config('custom.category-maper.goodwill');
+        return Arr::get($mapper, Arr::get($item, 'subCategoryId'));
     }
 }

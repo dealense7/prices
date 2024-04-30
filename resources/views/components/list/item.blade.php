@@ -13,11 +13,11 @@
     {{-- Image --}}
     <div
         x-on:click="
-             title = '{{$product->name}}';
+             title = `{{$product->name}}`;
              open = true;
              company = '{{$product->company->name ?? ''}}';
              imgUrl = 'storage/{{$product->images->first()->path ?? ''}}';
-             updated = '{{ $product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffForHumans() }}';
+             updated = '{{ $product->prices->count() > 0 ? $product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffForHumans() : '' }}';
              fetchPrices({{$product->id}});
              isLoading = true
          "
@@ -25,7 +25,7 @@
         <img loading="lazy" class="object-contain absolute h-[80%] w-max" src="storage/{{$product->images->first()->path ?? ''}}">
 
         {{-- Percentage --}}
-        {{ $sale = number_format(100 - $product->prices->min('price') / $product->prices->max('price') * 100, 2) }}
+        {{ $product->prices->count() > 0 ? $sale = number_format(100 - $product->prices->min('price') / $product->prices->max('price') * 100, 2) : $sale = 0 }}
         @if($sale > 0)
             <div
                 class="absolute top-3 left-3 text-[10px] p-0.5 px-1 rounded-md font-bold bg-gray-200 text-gray-700">
@@ -44,7 +44,7 @@
 
         {{-- last update date --}}
         <div class="absolute right-0 bottom-2 text-[8px] font-normal p-1.5 z-10">
-            @if ($product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffInDays(now()) <= 1)
+            @if ($product->prices->count() > 0  && $product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffInDays(now()) <= 1)
                 {{ $product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffForHumans() }}
             @endif
         </div>

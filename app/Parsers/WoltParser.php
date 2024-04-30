@@ -35,20 +35,16 @@ class WoltParser extends Parser
     {
         $code = data_get($item, 'barcode_gtin', 0);
 
-        if ($code === 0) {
+        if (empty($code)) {
             preg_match('/\b\d{13}\b/', $item['name'], $matches);
 
             $code = data_get($matches, 0, 0);
         }
 
-        if (
-           $code === 0
-        ) {
-            $url = data_get($item, 'image');
-
-            $pattern = "/(\d{13})\.[a-zA-Z]+$/"; // 13 digits before any file extension
-            preg_match($pattern, $url ?? '', $matches);
-
+        $imgUrl = $this->getImageUrl($item);
+        if (empty($code) && !empty($imgUrl)) {
+            $pattern = '/_(\d{13})\.(jpg|png|gif|bmp|tif|tiff|webp)$/';
+            preg_match($pattern, $imgUrl, $matches);
             $code = data_get($matches, 1, 0);
         }
 

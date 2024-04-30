@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use App\Parsers\GlovoParser;
+use App\Parsers\GoodwillParser;
+use App\Parsers\OriNabijiParser;
 use App\Parsers\WoltParser;
 
 enum Providers: int
@@ -31,9 +33,9 @@ enum Providers: int
 
         return match ($this) {
             Providers::Glovo     => GlovoParser::class,
-            Providers::OriNabiji => 'OriNabiji',
+            Providers::OriNabiji => OriNabijiParser::class,
             Providers::Wolt      => WoltParser::class,
-            Providers::Goodwill  => 'Goodwill',
+            Providers::Goodwill  => GoodwillParser::class,
             Providers::Spar      => 'Spar',
         };
     }

@@ -50,8 +50,11 @@ class SaveFetchedProduct
     {
         return Product::withTrashed()
             ->select(['id', 'deleted_at'])
-            ->with(['codes'])
-            ->whereHas('codes', function (Builder $query) use ($codes) {
+            ->with([
+                'codes' => function ($query) use ($codes) {
+                    $query->whereIn('code', $codes);
+                }
+            ])->whereHas('codes', function (Builder $query) use ($codes) {
                 $query->whereIn('code', $codes);
             })
             ->get();

@@ -9,7 +9,7 @@
                         <img src="{{ Vite::asset('resources/imgs/logo.png') }}" class="h-full w-full object-contain">
                     </div>
                     <div class="ml-2">
-                        <h1 class="font-bolder text-sm text-gray-900">ფასები</h1>
+                        <div class="flex items-center"><h1 class="font-bolder text-sm text-gray-900">ფასები</h1><span class="bg-green-500 p-1 rounded text-white font-normal text-[9px] ml-2">BETA</span></div>
                         <span class="font-normal text-[10px] text-gray-800">სურსათი უკეთეს ფასად</span>
                     </div>
                 </a>
