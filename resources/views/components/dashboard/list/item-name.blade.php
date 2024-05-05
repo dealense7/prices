@@ -1,6 +1,6 @@
 <div
     x-data="{
-        text: '{{$product->name}}',
+        text: `{{$product->name}}`,
         isTextUpdated: false,
     }"
      class="font-normal text-sm flex items-center gap-2 h-full"
