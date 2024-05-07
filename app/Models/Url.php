@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Parsers\Parser;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**

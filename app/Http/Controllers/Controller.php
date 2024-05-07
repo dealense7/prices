@@ -29,6 +29,7 @@ class Controller extends BaseController
     protected function getInputPerPage(): ?int
     {
         $perPage = (int) $this->getRequest()->input('perPage');
+
         return $perPage ?: null;
     }
 

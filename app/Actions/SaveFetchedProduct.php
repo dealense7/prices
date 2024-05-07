@@ -34,12 +34,12 @@ class SaveFetchedProduct
         // Generate list for process, so here will be only new products that I don't have in my DB
         $items = collect($items)->whereNotIn('code', $products->pluck('codes.*.code')->flatten()->toArray());
 
-        DB::transaction(function () use ($items) {
+        DB::transaction(static function () use ($items) {
             /** @var \App\DataTransferObjects\ProductDto $item */
             foreach ($items as $item) {
                 $productId = self::createProduct($item);
 
-                if (!empty($item->imageUrl)) {
+                if (! empty($item->imageUrl)) {
                     self::downloadImage($productId, $item->code, $item->imageUrl);
                 }
             }
@@ -51,10 +51,10 @@ class SaveFetchedProduct
         return Product::withTrashed()
             ->select(['id', 'deleted_at'])
             ->with([
-                'codes' => function ($query) use ($codes) {
+                'codes' => static function ($query) use ($codes) {
                     $query->whereIn('code', $codes);
-                }
-            ])->whereHas('codes', function (Builder $query) use ($codes) {
+                },
+            ])->whereHas('codes', static function (Builder $query) use ($codes) {
                 $query->whereIn('code', $codes);
             })
             ->get();
@@ -68,7 +68,7 @@ class SaveFetchedProduct
         DB::table((new BarCode())->getTable())
             ->insert([
                 'product_id' => $productId,
-                'code'       => $item->code
+                'code'       => $item->code,
             ]);
 
         self::createTranslations($productId, $item->name);
@@ -82,7 +82,6 @@ class SaveFetchedProduct
     private static function createCategory(int $productId, ?int $categoryId): void
     {
         if ($categoryId) {
-
             $category = SubCategory::from($categoryId);
             DB::table((new Product())->categories()->getTable())
                 ->insert([
@@ -110,7 +109,7 @@ class SaveFetchedProduct
         ?string $tagName,
     ): void {
 
-        if (!empty($tag) && !empty($tagName)) {
+        if (! empty($tag) && ! empty($tagName)) {
             if ($tagName === 'გ') {
                 $tagName = 'გრ';
             } elseif (in_array($tagName, ['ლ', 'კგ'], true) && floatval($tag) < 1) {
@@ -119,7 +118,7 @@ class SaveFetchedProduct
             }
 
             /** @var \App\Models\Tag\TagTranslation|null $tagTranslation */
-            $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag.' '.$tagName)->first();
+            $tagTranslation = DB::table((new TagTranslation())->getTable())->where('name', $tag . ' ' . $tagName)->first();
             $tagId          = $tagTranslation?->tag_id;
 
             if ($tagId === null) {
@@ -146,7 +145,7 @@ class SaveFetchedProduct
                     ->insert([
                         'tag_id'      => $tagId,
                         'language_id' => Languages::Georgian->value,
-                        'name'        => $tag.' '.$tagName,
+                        'name'        => $tag . ' ' . $tagName,
                     ]);
             }
 
@@ -206,15 +205,15 @@ class SaveFetchedProduct
                 $imageContent = file_get_contents($url);
 
                 if ($imageContent) {
-                    $filename = $code.'.'.$extension;
+                    $filename = $code . '.' . $extension;
 
-                    Storage::disk('public')->put('products'.'/'.$filename, $imageContent);
+                    Storage::disk('public')->put('products' . '/' . $filename, $imageContent);
 
-                    $diskUrl = Storage::disk('public')->path('products'.'/'.$filename);
+                    $diskUrl = Storage::disk('public')->path('products' . '/' . $filename);
 
                     $data = [
                         'name'          => $filename,
-                        'path'          => 'products'.'/'.$filename,
+                        'path'          => 'products' . '/' . $filename,
                         'size'          => filesize($diskUrl),
                         'extension'     => $extension,
                         'fileable_id'   => $productId,

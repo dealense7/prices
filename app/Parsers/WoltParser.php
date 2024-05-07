@@ -26,10 +26,10 @@ class WoltParser extends Parser
 
     public function getCategoryId(array $item): ?int
     {
-        $mapper = config('custom.category-maper.' . strtolower(Stores::from($this->storeId)->name). '-wolt');
+        $mapper = config('custom.category-maper.' . strtolower(Stores::from($this->storeId)->name) . '-wolt');
+
         return Arr::get($mapper, Arr::get($item, 'category'));
     }
-
 
     public function getCode(array $item): int
     {
@@ -42,7 +42,7 @@ class WoltParser extends Parser
         }
 
         $imgUrl = $this->getImageUrl($item);
-        if (empty($code) && !empty($imgUrl)) {
+        if (empty($code) && ! empty($imgUrl)) {
             $pattern = '/_(\d{13})\.(jpg|png|gif|bmp|tif|tiff|webp)$/';
             preg_match($pattern, $imgUrl, $matches);
             $code = data_get($matches, 1, 0);
@@ -65,7 +65,7 @@ class WoltParser extends Parser
     {
         $promotion = Arr::get($item, 'original_price');
 
-        if ( ! empty($promotion)) {
+        if (! empty($promotion)) {
             return $promotion;
         }
 

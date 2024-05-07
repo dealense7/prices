@@ -30,7 +30,7 @@ class OriNabijiParser extends Parser
     {
         $promotion = Arr::get($item, 'discount');
 
-        if (!empty($promotion)) {
+        if (! empty($promotion)) {
             return intval(round($promotion['price'], 3) * 100);
         }
 
@@ -41,7 +41,7 @@ class OriNabijiParser extends Parser
     {
         $promotion = Arr::get($item, 'discount');
 
-        if (!empty($promotion)) {
+        if (! empty($promotion)) {
             return intval(round($item['stock']['price'], 3) * 100);
         }
 
@@ -55,12 +55,13 @@ class OriNabijiParser extends Parser
 
     public function getImageUrl(array $item): string
     {
-        return 'https://second.media.2nabiji.ge/api/files/resize/300/300/'.$item['images'][0]['imageId'].'/'.$item['images'][0]['originalName'];
+        return 'https://second.media.2nabiji.ge/api/files/resize/300/300/' . $item['images'][0]['imageId'] . '/' . $item['images'][0]['originalName'];
     }
 
     public function getCategoryId(array $item): ?int
     {
         $mapper = config('custom.category-maper.orinabiji');
+
         return Arr::get($mapper, Arr::get($item, 'categoryId'));
     }
 
@@ -69,7 +70,7 @@ class OriNabijiParser extends Parser
         $response = Http::withoutVerifying()->post(
             'https://catalog-api.orinabiji.ge/catalog/api/products/search?lang=ge&sortField=isInStock&sortDirection=-1',
             [
-                'categoryIds'=> explode(',', $this->url),
+                'categoryIds' => explode(',', $this->url),
                 'limit' => 150,
                 'skip' => 0,
             ]

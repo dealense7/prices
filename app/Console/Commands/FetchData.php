@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Enums\Stores;
 use App\Jobs\ParseStoreProducts;
 use App\Models\Store;
 use Illuminate\Console\Command;
@@ -28,13 +27,13 @@ class FetchData extends Command
         foreach ($stores as $store) {
             foreach ($store->urls->groupBy('provider_id') as $providerId => $url) {
                 $providers[$providerId] = [
-                   ...Arr::get($providers, $providerId, []),
-                   ...$url->pluck('url')->transform(function ($item) use ($store) {
-                       return [
-                          'url'      => $item,
-                          'store_id' => $store->id
-                       ];
-                   })
+                    ...Arr::get($providers, $providerId, []),
+                    ...$url->pluck('url')->transform(static function ($item) use ($store) {
+                        return [
+                            'url'      => $item,
+                            'store_id' => $store->id,
+                        ];
+                    }),
                 ];
             }
         }
@@ -50,8 +49,8 @@ class FetchData extends Command
     private function getStores(): Collection
     {
         return Store::query()
-           ->with([
-              'urls.provider',
-           ])->get();
+            ->with([
+                'urls.provider',
+            ])->get();
     }
 }

@@ -44,4 +44,3 @@ return [
 
     '105' => SubCategory::BREAD_DARK_REY->value,
 ];
-

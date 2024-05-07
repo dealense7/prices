@@ -23,7 +23,7 @@ class ProductPrice extends Model
         'provider_id',
         'price',
         'is_sale',
-        'price_before_sale'
+        'price_before_sale',
     ];
 
     public function getId(): int

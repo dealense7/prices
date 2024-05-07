@@ -28,5 +28,4 @@ interface CategoryServiceContract
     public function update(Category $item, array $data): Category;
 
     public function delete(Category $item): void;
-
 }

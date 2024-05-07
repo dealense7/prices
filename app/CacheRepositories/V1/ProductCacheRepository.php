@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace App\CacheRepositories\V1;
 
 use App\CacheRepositories\CacheRepository;
-use App\Contracts\Repositories\CategoryRepositoryContract;
 use App\Contracts\Repositories\ProductRepositoryContract;
-use App\Models\Category\Category;
 use App\Models\Product\Product;
-use App\Repositories\V1\CategoryRepository;
 use App\Repositories\V1\ProductRepository;
 use App\Support\Collection;
 use Illuminate\Contracts\Cache\Repository as CacheContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Validation\ValidationException;
 
 class ProductCacheRepository extends CacheRepository implements ProductRepositoryContract
 {
@@ -29,7 +25,7 @@ class ProductCacheRepository extends CacheRepository implements ProductRepositor
     }
 
     /**
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function findItems(
         array $filters = [],

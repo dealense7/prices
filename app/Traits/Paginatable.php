@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use App\Models\Model;
-
 /**
- * @mixin Model
+ * @mixin \App\Models\Model
  */
 trait Paginatable
 {

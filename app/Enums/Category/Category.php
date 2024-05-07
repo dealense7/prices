@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Category;
 
 use App\Enums\Languages;
@@ -20,72 +22,72 @@ enum Category: int
             Category::BREAD => [
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'პური'
+                    'name'        => 'პური',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Bread'
-                ]
+                    'name'        => 'Bread',
+                ],
             ],
             Category::VEGETABLE_AND_FRUIT => [
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ბოსტნეული და ხილი'
+                    'name'        => 'ბოსტნეული და ხილი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Vegetable and Fruit'
-                ]
+                    'name'        => 'Vegetable and Fruit',
+                ],
             ],
             Category::DAIRY => [
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'რძის ნაწარმი'
+                    'name'        => 'რძის ნაწარმი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Dairy'
-                ]
+                    'name'        => 'Dairy',
+                ],
             ],
             Category::GROCERY => [
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ბაკალეა'
+                    'name'        => 'ბაკალეა',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Grocery'
-                ]
+                    'name'        => 'Grocery',
+                ],
             ],
             Category::MEAT_AND_FISH => [
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ხორცი და თევზი'
+                    'name'        => 'ხორცი და თევზი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Meat and Fish'
-                ]
+                    'name'        => 'Meat and Fish',
+                ],
             ],
             Category::ALCOHOLIC_DRINKS => [
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ალკოჰოლი'
+                    'name'        => 'ალკოჰოლი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Alcoholic Drink'
-                ]
+                    'name'        => 'Alcoholic Drink',
+                ],
             ],
             Category::NON_ALCOHOLIC_DRINKS => [
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'უალკოჰოლო სასმელი'
+                    'name'        => 'უალკოჰოლო სასმელი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Non Alcoholic Drinks'
-                ]
+                    'name'        => 'Non Alcoholic Drinks',
+                ],
             ],
         };
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\Category;
 
 use App\Enums\Languages;
@@ -47,364 +49,364 @@ enum SubCategory: int
                 'parent_id' => Category::BREAD->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'თეთრი პური'
+                    'name'        => 'თეთრი პური',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'White Bread'
-                ]
+                    'name'        => 'White Bread',
+                ],
             ],
             SubCategory::BREAD_DARK_REY => [
                 'parent_id' => Category::BREAD->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'შავი პური'
+                    'name'        => 'შავი პური',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Dark Rey Bread'
-                ]
+                    'name'        => 'Dark Rey Bread',
+                ],
             ],
             SubCategory::FRUIT => [
                 'parent_id' => Category::VEGETABLE_AND_FRUIT->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ხილი'
+                    'name'        => 'ხილი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Fruit'
-                ]
+                    'name'        => 'Fruit',
+                ],
             ],
             SubCategory::VEGETABLE => [
                 'parent_id' => Category::VEGETABLE_AND_FRUIT->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ბოსტნეული'
+                    'name'        => 'ბოსტნეული',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Vegetable'
-                ]
+                    'name'        => 'Vegetable',
+                ],
             ],
             SubCategory::HERB => [
                 'parent_id' => Category::VEGETABLE_AND_FRUIT->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'მწვანილები'
+                    'name'        => 'მწვანილები',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Herbs'
-                ]
+                    'name'        => 'Herbs',
+                ],
             ],
             SubCategory::DAIRY_MILK => [
                 'parent_id' => Category::DAIRY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'რძე'
+                    'name'        => 'რძე',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Milk'
-                ]
+                    'name'        => 'Milk',
+                ],
             ],
             SubCategory::DAIRY_EGG => [
                 'parent_id' => Category::DAIRY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'კვერცხი'
+                    'name'        => 'კვერცხი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Egg'
-                ]
+                    'name'        => 'Egg',
+                ],
             ],
             SubCategory::DAIRY_CHEESE => [
                 'parent_id' => Category::DAIRY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ყველი'
+                    'name'        => 'ყველი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Cheese'
-                ]
+                    'name'        => 'Cheese',
+                ],
             ],
             SubCategory::DAIRY_YOGURT => [
                 'parent_id' => Category::DAIRY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'იოგურტი'
+                    'name'        => 'იოგურტი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Yogurt'
-                ]
+                    'name'        => 'Yogurt',
+                ],
             ],
             SubCategory::DAIRY_BUTTER => [
                 'parent_id' => Category::DAIRY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'კარაქი, მარგარინი, სპრედი'
+                    'name'        => 'კარაქი, მარგარინი, სპრედი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Butter, Margarine, Spread'
-                ]
+                    'name'        => 'Butter, Margarine, Spread',
+                ],
             ],
             SubCategory::DAIRY_SOUR_CREAM => [
                 'parent_id' => Category::DAIRY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'მაწონი, არაჟანი, ხაჭო'
+                    'name'        => 'მაწონი, არაჟანი, ხაჭო',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Matsoni, Sour Cream, Cottage cheese'
-                ]
+                    'name'        => 'Matsoni, Sour Cream, Cottage cheese',
+                ],
             ],
             SubCategory::GROCERY_GRAIN => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'მარცვლეული, ბურღულეული'
+                    'name'        => 'მარცვლეული, ბურღულეული',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Grain, Cereal'
-                ]
+                    'name'        => 'Grain, Cereal',
+                ],
             ],
             SubCategory::GROCERY_SUGAR => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'შაქარი, მარილი, ფქვილი'
+                    'name'        => 'შაქარი, მარილი, ფქვილი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Sugar, Salt, Flour'
-                ]
+                    'name'        => 'Sugar, Salt, Flour',
+                ],
             ],
             SubCategory::GROCERY_SAUCE => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'სოუსები'
+                    'name'        => 'სოუსები',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Sauces'
-                ]
+                    'name'        => 'Sauces',
+                ],
             ],
             SubCategory::GROCERY_OIL => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ზეთი, ძმარი'
+                    'name'        => 'ზეთი, ძმარი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Oil, Vinegar'
-                ]
+                    'name'        => 'Oil, Vinegar',
+                ],
             ],
             SubCategory::GROCERY_CANNED_FOOD => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'კონსერვები'
+                    'name'        => 'კონსერვები',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Canned Food'
-                ]
+                    'name'        => 'Canned Food',
+                ],
             ],
             SubCategory::GROCERY_PASTA => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'პასტა'
+                    'name'        => 'პასტა',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Pasta'
-                ]
+                    'name'        => 'Pasta',
+                ],
             ],
             SubCategory::GROCERY_HONEY => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'თაფლი, ჯემი'
+                    'name'        => 'თაფლი, ჯემი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Honey, Jam'
-                ]
+                    'name'        => 'Honey, Jam',
+                ],
             ],
             SubCategory::GROCERY_SEMI_FINISHED => [
                 'parent_id' => Category::GROCERY->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ნახევარფაბრიკატები'
+                    'name'        => 'ნახევარფაბრიკატები',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Semi Finished'
-                ]
+                    'name'        => 'Semi Finished',
+                ],
             ],
             SubCategory::CHICKEN => [
                 'parent_id' => Category::MEAT_AND_FISH->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ქათამი'
+                    'name'        => 'ქათამი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Chicken'
-                ]
+                    'name'        => 'Chicken',
+                ],
             ],
             SubCategory::PORK => [
                 'parent_id' => Category::MEAT_AND_FISH->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ღორი'
+                    'name'        => 'ღორი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Pork'
-                ]
+                    'name'        => 'Pork',
+                ],
             ],
             SubCategory::BEEF => [
                 'parent_id' => Category::MEAT_AND_FISH->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'საქონელი'
+                    'name'        => 'საქონელი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Beef'
-                ]
+                    'name'        => 'Beef',
+                ],
             ],
             SubCategory::FISH => [
                 'parent_id' => Category::MEAT_AND_FISH->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'თევზი'
+                    'name'        => 'თევზი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Fish'
-                ]
+                    'name'        => 'Fish',
+                ],
             ],
             SubCategory::COLD_DRINK => [
                 'parent_id' => Category::NON_ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ცივი სასმელები'
+                    'name'        => 'ცივი სასმელები',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Cold Drinks'
-                ]
+                    'name'        => 'Cold Drinks',
+                ],
             ],
             SubCategory::WATER => [
                 'parent_id' => Category::NON_ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'წყალი'
+                    'name'        => 'წყალი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Water'
-                ]
+                    'name'        => 'Water',
+                ],
             ],
             SubCategory::JUICE => [
                 'parent_id' => Category::NON_ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'წვენი'
+                    'name'        => 'წვენი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Juice'
-                ]
+                    'name'        => 'Juice',
+                ],
             ],
             SubCategory::ENERGY_DRINK => [
                 'parent_id' => Category::NON_ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ენერგეტიკული სასმელები'
+                    'name'        => 'ენერგეტიკული სასმელები',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Energy Drinks'
-                ]
+                    'name'        => 'Energy Drinks',
+                ],
             ],
             SubCategory::TEA_AND_COFFEE => [
                 'parent_id' => Category::NON_ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ჩაი და ყავა'
+                    'name'        => 'ჩაი და ყავა',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Tea and Coffee'
-                ]
+                    'name'        => 'Tea and Coffee',
+                ],
             ],
             SubCategory::WINE => [
                 'parent_id' => Category::ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ღვინო'
+                    'name'        => 'ღვინო',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Wine'
-                ]
+                    'name'        => 'Wine',
+                ],
             ],
             SubCategory::BEER => [
                 'parent_id' => Category::ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ლუდი'
+                    'name'        => 'ლუდი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Beer'
-                ]
+                    'name'        => 'Beer',
+                ],
             ],
             SubCategory::VODKA => [
                 'parent_id' => Category::ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'არაყი'
+                    'name'        => 'არაყი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Vodka'
-                ]
+                    'name'        => 'Vodka',
+                ],
             ],
             SubCategory::WHISKEY => [
                 'parent_id' => Category::ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'ვისკი'
+                    'name'        => 'ვისკი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Whiskey'
-                ]
+                    'name'        => 'Whiskey',
+                ],
             ],
             SubCategory::OTHER_ALCOHOL => [
                 'parent_id' => Category::ALCOHOLIC_DRINKS->value,
                 [
                     'language_id' => Languages::Georgian->value,
-                    'name'        => 'სხვა ალკოჰოლი'
+                    'name'        => 'სხვა ალკოჰოლი',
                 ],
                 [
                     'language_id' => Languages::English->value,
-                    'name'        => 'Other Alcohol'
-                ]
+                    'name'        => 'Other Alcohol',
+                ],
             ],
         };
     }

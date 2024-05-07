@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Product;
 
 use App\Models\Model;
@@ -12,12 +14,12 @@ use App\Models\Model;
 class BarCode extends Model
 {
     protected $fillable = [
-       'product_id',
-       'code',
+        'product_id',
+        'code',
     ];
 
     protected $casts = [
-       'show' => 'boolean'
+        'show' => 'boolean',
     ];
 
     public function getId(): int

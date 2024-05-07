@@ -48,7 +48,7 @@ class CategoryService implements CategoryServiceContract
     {
         $item = $this->findById($id);
 
-        if (!$item) {
+        if (! $item) {
             throw new ItemNotFoundException();
         }
 

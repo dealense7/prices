@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Parsers;
 
 use App\DataTransferObjects\ProductDto;
-use Illuminate\Support\Facades\Http;
-use Throwable;
 
 abstract class Parser
 {
@@ -14,7 +12,7 @@ abstract class Parser
 
     public function __construct(
         public string $url,
-        public int $storeId
+        public int $storeId,
     ) {
     }
 
@@ -40,6 +38,7 @@ abstract class Parser
     public function processData(): array
     {
         $this->fetchData();
+
         return $this->getItems();
     }
 
@@ -51,7 +50,7 @@ abstract class Parser
             // we don't need to save product if we don't know its price
             $code       = $this->getCode($item);
             $categoryId = $this->getCategoryId($item);
-            if (!in_array(strlen((string) $code), [13, 7]) || empty($this->getPrice($item)) || $categoryId === null) {
+            if (! in_array(strlen((string) $code), [13, 7]) || empty($this->getPrice($item)) || $categoryId === null) {
                 continue;
             }
 
@@ -85,7 +84,7 @@ abstract class Parser
     {
         preg_match('/(\d+(?:\.\d+)?)\s*(ლ|მლ|კგ|გრ|გ|ც)/', $this->getName($item), $matches);
 
-        return !empty($matches[2]) ? $matches[2] : data_get($matches, 3);
+        return ! empty($matches[2]) ? $matches[2] : data_get($matches, 3);
     }
 
     public function getCompanyName(array $item): ?string

@@ -39,7 +39,7 @@ class ProductRepository implements ProductRepositoryContract
                 (new ProductTranslation())->getTable() . '.id'
             )
 //            ->where((new ProductTranslation())->getTable() . '.name', 'LIKE', '%კვერცხი%')
-            ->where('products.show', false)
+            ->where('products.show', true)
             ->whereNull('products.deleted_at')
             ->where('files.fileable_type', Product::class)
             ->groupBy($productPriceTable . '.product_id')
@@ -256,5 +256,3 @@ class ProductRepository implements ProductRepositoryContract
         return new ProductPrice();
     }
 }
-
-

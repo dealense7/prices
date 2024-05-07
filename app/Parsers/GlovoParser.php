@@ -15,7 +15,7 @@ class GlovoParser extends Parser
         foreach (Arr::get($this->data, 'data.body', []) as $data) {
             $items = [
                 ...$items,
-                ...Arr::get($data, 'data.elements', [])
+                ...Arr::get($data, 'data.elements', []),
             ];
         }
 
@@ -106,14 +106,14 @@ class GlovoParser extends Parser
     {
         preg_match('/(\d+(?:\.\d+)?)\s*(ლ|მლ|კგ|გრ|გ|ც)/', $this->getName($item), $matches);
 
-        return !empty($matches[2]) ? $matches[2] : data_get($matches, 3);
+        return ! empty($matches[2]) ? $matches[2] : data_get($matches, 3);
     }
 
     public function getPrice(array $item): int
     {
         $promotion = Arr::get($item, 'data.promotion');
 
-        if (!empty($promotion)) {
+        if (! empty($promotion)) {
             return intval(round(Arr::get($promotion, 'priceInfo.amount'), 3) * 100);
         }
 
@@ -124,7 +124,7 @@ class GlovoParser extends Parser
     {
         $promotion = Arr::get($item, 'data.promotion');
 
-        if (!empty($promotion)) {
+        if (! empty($promotion)) {
             return intval(round($item['data']['priceInfo']['amount'], 3) * 100);
         }
 

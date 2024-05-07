@@ -29,7 +29,7 @@ class BindingServiceProvider extends ServiceProvider
         ],
         CategoryRepositoryContract::class => [
             CategoryRepository::class,
-            CategoryCacheRepository::class
+            CategoryCacheRepository::class,
         ],
         ProductRepositoryContract::class  => [
             ProductRepository::class,
@@ -39,7 +39,7 @@ class BindingServiceProvider extends ServiceProvider
     private const SERVICES     = [
         CategoryServiceContract::class => [
             'v1' => [
-                CategoryService::class
+                CategoryService::class,
             ],
         ],
     ];
@@ -56,7 +56,7 @@ class BindingServiceProvider extends ServiceProvider
 
         $cacheServices = config('custom.constants.cache_services');
         $classes       = [
-            ...self::SERVICES
+            ...self::SERVICES,
         ];
 
         foreach ($classes as $abstract => $versions) {

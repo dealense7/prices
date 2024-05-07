@@ -3,22 +3,17 @@
 @section('content')
 
     <div class="grid grid-cols-10">
-        <div class="col-span-2">
+        <div class="col-span-10 md:col-span-2">
             <x-list.categories :categories="$categories" />
         </div>
-        <div class="col-span-8">
+        <div class="col-span-10 md:col-span-8">
 
             <div class="flex items-center justify-between w-full mt-3">
                 <div>
                     <h2 class="font-bolder text-base text-gray-800">პროდუქტები</h2>
-                    <span class="text-xs font-normal text-gray-700">შეადარეთ სუპერმარკეტის ფასები</span>
+                    <span class="text-xs font-normal text-gray-700 hidden md:flex">შეადარეთ სუპერმარკეტის ფასები</span>
                 </div>
                 <div class="w-[300px] lg:col-span-1 flex items-center justify-center ">
-                    <a class="items-center col-span-1 leading-none lg:hidden flex" href="/">
-                        <div class="h-[41px] rounded-md">
-                            <img src="{{ Vite::asset('resources/imgs/logo.png') }}" class="h-full w-full object-contain">
-                        </div>
-                    </a>
                     <form action="/items" class="flex items-center w-full h-[41px] bg-[#e1e1e1]  rounded-[3px]" method="get">
                         <label class="w-full">
                             <input type="text"
@@ -90,5 +85,6 @@
         </div>
     </div>
 
+    <!--   ვინც გადოსოს ბოზი იყოს, ისედაც საწყალ 5 დოლარიან სერვერზეა.   -->
 @endsection
 

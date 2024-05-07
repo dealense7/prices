@@ -71,7 +71,7 @@ class CategoryCacheRepository extends CacheRepository implements CategoryReposit
 
         $this->forget($key);
 
-        return $this->setTag()->remember($key, function () use ($item) {
+        return $this->setTag()->remember($key, static function () use ($item) {
             return $item;
         });
     }

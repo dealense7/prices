@@ -29,7 +29,7 @@ class SaveFetchedPrices implements ShouldQueue
         $productCodes = Arr::pluck($items, 'code');
         $products     = self::getProductByCode($productCodes);
         $productCodes = $products->pluck('codes.*.code')->flatten()->toArray();
-        $products     = $products->transform(function ($item) {
+        $products     = $products->transform(static function ($item) {
             return [
                 'id'   => $item->id,
                 'code' => $item->codes->first()->code,
@@ -39,7 +39,7 @@ class SaveFetchedPrices implements ShouldQueue
         // I want to update prices only not deleted items
         $items = collect($items)->whereIn('code', $productCodes);
 
-        DB::transaction(function () use ($items, $storeId, $providerId, $products) {
+        DB::transaction(static function () use ($items, $storeId, $providerId, $products) {
             $priceTable = (new ProductPrice())->getTable();
 
             /** @var \App\DataTransferObjects\ProductDto $item */
@@ -53,11 +53,11 @@ class SaveFetchedPrices implements ShouldQueue
     {
         return Product::query()
             ->with([
-                'codes' => function ($query) use ($codes) {
+                'codes' => static function ($query) use ($codes) {
                     $query->whereIn('code', $codes);
-                }
+                },
             ])
-            ->whereHas('codes', function (Builder $query) use ($codes) {
+            ->whereHas('codes', static function (Builder $query) use ($codes) {
                 $query->whereIn('code', $codes);
             })
             ->get();
@@ -68,7 +68,7 @@ class SaveFetchedPrices implements ShouldQueue
         int $id,
         string $priceTable,
         int $storeId,
-        int $providerId
+        int $providerId,
     ): void {
 
         // If I have a week-old price in DB and that price is not updating I don't care about it anymore
@@ -121,7 +121,7 @@ class SaveFetchedPrices implements ShouldQueue
                 'created_at'        => now(),
                 'active'            => true,
                 'is_sale'           => $item->priceBeforeSale !== null && $item->price < $item->priceBeforeSale,
-                'price_before_sale' => $item->priceBeforeSale
+                'price_before_sale' => $item->priceBeforeSale,
             ]);
         }
     }

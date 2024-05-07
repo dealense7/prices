@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\CacheRepositories;
 
 use Closure;
+use Illuminate\Cache\TaggableStore;
 use Illuminate\Contracts\Cache\Repository as CacheContract;
 use Illuminate\Support\Facades\Cache;
 
@@ -162,7 +163,7 @@ abstract class CacheRepository
         if (
             ! empty($tags)
             && ! app()->environment('testing')
-            && $this->cache->getStore() instanceof \Illuminate\Cache\TaggableStore
+            && $this->cache->getStore() instanceof TaggableStore
         ) {
             return $this->cache->tags($tags);
         }

@@ -25,7 +25,7 @@
         <img loading="lazy" class="object-contain absolute h-[80%] w-max" src="storage/{{$product->images->first()->path ?? ''}}">
 
         {{-- Percentage --}}
-        {{ $product->prices->count() > 0 ? $sale = number_format(100 - $product->prices->min('price') / $product->prices->max('price') * 100, 2) : $sale = 0 }}
+        @php $product->prices->count() > 0 ? $sale = number_format(100 - $product->prices->min('price') / $product->prices->max('price') * 100, 2) : $sale = 0 @endphp
         @if($sale > 0)
             <div
                 class="absolute top-3 left-3 text-[10px] p-0.5 px-1 rounded-md font-bold bg-gray-200 text-gray-700">

@@ -22,10 +22,17 @@ class CategoryRepository extends Repository implements CategoryRepositoryContrac
         $model = $this->getModel();
 
         $items = $this->getData($filters)
+            ->whereHas('allProducts')
             ->with([
                 'translation',
-                'children.products',
-                'children.translation',
+                'children' => static function ($query) {
+                    $query
+                        ->with([
+                            'translation',
+                            'products',
+                        ])
+                        ->whereHas('products');
+                },
             ])
             ->whereNull('parent_id');
 
@@ -39,11 +46,17 @@ class CategoryRepository extends Repository implements CategoryRepositoryContrac
 
     public function getAllItems(array $filters = []): Collection
     {
-        /** @var Collection $items */
+        /** @var \App\Support\Collection $items */
         $items = $this->getData($filters)
             ->with([
                 'translation',
-                'children.translation'
+                'children' => static function ($query) {
+                    $query
+                        ->with([
+                            'translation',
+                        ])
+                        ->whereHas('products');
+                },
             ])
             ->whereNull('parent_id')
             ->orderBy('id')

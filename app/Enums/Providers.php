@@ -30,7 +30,6 @@ enum Providers: int
 
     public function getClass(): string
     {
-
         return match ($this) {
             Providers::Glovo     => GlovoParser::class,
             Providers::OriNabiji => OriNabijiParser::class,

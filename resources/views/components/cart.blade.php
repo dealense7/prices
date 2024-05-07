@@ -30,7 +30,7 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <div class="p-4 md:p-5 space-y-4">
+            <div class="p-4 md:p-5 space-y-4 max-h-[70vh] overflow-auto">
                 <div class="grid grid-cols-3 gap-4">
                     <ul class="col-span-3">
                         <template x-for="item in items">

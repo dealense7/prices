@@ -7,8 +7,6 @@ namespace App\Models\Category;
 use App\Enums\Languages;
 use App\Models\Model;
 use App\Models\Product\Product;
-use App\Support\Collection;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -30,7 +28,7 @@ class Category extends Model
         'show',
         'parent_id',
         'foreignId',
-        'icon_path'
+        'icon_path',
     ];
 
     public function getId(): int

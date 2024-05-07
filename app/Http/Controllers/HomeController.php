@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Services\CategoryServiceContract;
 use App\Services\ProductService;
-use App\Services\V1\CategoryService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index(
-        CategoryService $categoryService,
+        CategoryServiceContract $categoryService,
         ProductService $productService,
         //        StoreService $storeService,
     ): View {
@@ -27,7 +27,7 @@ class HomeController extends Controller
 
     public function items(
         Request $request,
-        CategoryService $categoryService,
+        CategoryServiceContract $categoryService,
         ProductService $productService,
     ): View {
         $filters = $this->getInputFilters();
