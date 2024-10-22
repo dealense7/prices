@@ -36,20 +36,22 @@ class ProductController extends Controller
         return true;
     }
 
-    public function getPrice(
-        int $id,
-        ProductService $service,
-    ) {
+    public function getPrice(int $id, ProductService $service)
+    {
         $item = $service->findOrFailById($id);
 
         return $service->getPrice($item);
     }
 
-    public function getProducts(
-        Request $request,
-        ProductService $service,
-    ) {
-        $ids = [];
+    public function getPriceHistory(int $id, ProductService $service): array
+    {
+        $item = $service->findOrFailById($id);
+
+        return $service->getPriceHistory($item);
+    }
+
+    public function getProducts(Request $request, ProductService $service) {
+        $ids        = [];
         $requestIds = $request->get('ids', []);
         foreach ($requestIds as $requestId) {
             $id = intval($requestId);

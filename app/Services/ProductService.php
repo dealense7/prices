@@ -11,6 +11,7 @@ use App\Exceptions\ItemNotFoundException;
 use App\Models\Product\Product;
 use App\Support\Collection;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductService
@@ -77,6 +78,28 @@ class ProductService
     public function getProductsList(array $ids): Collection
     {
         return $this->repository->getProductsList(['ids' => $ids]);
+    }
+
+    public function getPriceHistory(Product $item): array
+    {
+        $prices = $this->repository->getPriceHistory($item);
+
+        $weeks     = [];
+        $minPrices = [];
+        $maxPrices = [];
+
+        foreach ($prices as $price) {
+            $week = (string) $price->week;
+            $weeks[]     = substr($week, 0, 4) . '/' . substr($week, 4);;
+            $minPrices[] = number_format($price->min_price/100, 2);
+            $maxPrices[] = number_format($price->max_price/100, 2);
+        }
+
+        return [
+            'weeks'      => $weeks,
+            'min_prices' => $minPrices,
+            'max_prices' => $maxPrices,
+        ];
     }
 
     public function update(Product $item, array $data): Product

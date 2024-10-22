@@ -12,6 +12,7 @@ use App\Models\Product\ProductPrice;
 use App\Models\Product\ProductTranslation;
 use App\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements ProductRepositoryContract
 {
@@ -146,6 +147,21 @@ class ProductRepository implements ProductRepositoryContract
             ->filterByParentCategories($filters)
             ->filterByKeyword($filters)
             ->paginate(21);
+    }
+
+    public function getPriceHistory(Product $item): array
+    {
+        return DB::select('
+            SELECT product_id,
+                   YEARWEEK(created_at, 1) AS week,
+                   MIN(price)              AS min_price,
+                   MAX(price)              AS max_price
+            FROM product_prices
+            WHERE product_id = '. $item->id .'
+            GROUP BY product_id,
+                     week
+            ORDER BY week ASC;
+        ');
     }
 
     public function getProductsList(array $filters = []): Collection

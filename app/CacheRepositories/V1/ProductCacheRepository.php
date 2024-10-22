@@ -84,6 +84,17 @@ class ProductCacheRepository extends CacheRepository implements ProductRepositor
         });
     }
 
+    public function getPriceHistory(Product $item): array
+    {
+        $key = $this->createKeyFromArgs([
+            'item_id' => $item->id,
+        ], 'getProductHistory');
+
+        return $this->setTag()->remember($key, function () use ($item) {
+            return $this->repository->getPriceHistory($item);
+        });
+    }
+
     public function update(Product $item, array $data): Product
     {
         $key = $this->createKeyFromArgs([

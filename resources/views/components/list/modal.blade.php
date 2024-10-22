@@ -75,6 +75,8 @@
                         </div>
                     </div>
                 </div>
+
+                <canvas id="myChart"></canvas>
             </div>
             <!-- Modal footer -->
             <div

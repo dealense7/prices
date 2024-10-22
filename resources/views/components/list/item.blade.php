@@ -15,10 +15,11 @@
         x-on:click="
              title = `{{$product->name}}`;
              open = true;
-             company = '{{$product->company->name ?? ''}}';
+             company = `{{$product->company->name ?? ''}}`;
              imgUrl = 'storage/{{$product->images->first()->path ?? ''}}';
              updated = '{{ $product->prices->count() > 0 ? $product->prices->firstWhere('price', $product->prices->min('price'))->created_at->diffForHumans() : '' }}';
              fetchPrices({{$product->id}});
+             paintChart({{$product->id}});
              isLoading = true
          "
         class="h-[180px] cursor-pointer shadow flex items-center justify-center relative bg-white rounded-[7px]">

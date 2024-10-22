@@ -25,6 +25,8 @@ interface ProductRepositoryContract
 
     public function getProductsList(array $filters = []): Collection;
 
+    public function getPriceHistory(Product $item): array;
+
     public function update(Product $item, array $data): Product;
 
     public function createOrUpdateTranslation(Product $item, array $data): Product;

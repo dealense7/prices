@@ -1,4 +1,5 @@
 import './bootstrap';
+import { Chart } from 'chart.js/auto'
 
 import.meta.glob([
     '../imgs/**',
@@ -6,6 +7,61 @@ import.meta.glob([
 ]);
 
 window.productCartIds = [];
+let myChart;
+
+window.paintChart = async (id) => {
+    fetch(
+        'api/product/' + id + '/price-history',
+        {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            let ctx = document.getElementById('myChart');
+            const labels = res.weeks;
+            let data = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Max',
+                        data: res.max_prices,
+                        fill: false,
+                        borderColor: 'rgb(255,40,61)',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Min',
+                        data: res.min_prices,
+                        fill: false,
+                        borderColor: 'rgb(54,189,128)',
+                        tension: 0.1
+                    }
+                ]
+            };
+            let config = {
+                type: 'line',
+                data: data,
+            };
+            if (myChart) {
+                // Update the existing chart's data
+                myChart.data.labels = labels;
+                myChart.data.datasets[0].data = res.max_prices;
+                myChart.data.datasets[1].data = res.min_prices;
+                myChart.update(); // Update the chart
+            } else {
+                // Create a new chart instance
+                let config = {
+                    type: 'line',
+                    data: data,
+                };
+                myChart = new Chart(ctx, config); // Store the chart instance
+            }
+        })
+}
 const fetchPrice = async (items) => {
 
     if (items.length < 1) {

@@ -21,5 +21,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/products', [ProductController::class, 'getProducts']);
 Route::get('/product/{id}/prices', [ProductController::class, 'getPrice']);
+Route::get('/product/{id}/price-history', [ProductController::class, 'getPriceHistory']);
 //Route::put('/product/{id}', [ProductController::class, 'update']);
 //Route::delete('/product/{id}', [ProductController::class, 'delete']);
